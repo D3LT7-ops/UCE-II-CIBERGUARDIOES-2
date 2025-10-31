@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciber Guardiões - A Aventura Digital Segura</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        #matrixBg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0.15;
+        }
+
+        #gameContainer {
+            position: relative;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3), inset 0 0 40px rgba(0, 255, 65, 0.1);
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            color: #00ff41;
+            pointer-events: none;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .ui-panel {
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #00ff41;
+            padding: 15px 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            font-family: 'Orbitron', monospace;
+        }
+
+        #score {
+            font-size: 16px;
+            font-weight: 700;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        #phaseInfo {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        #phaseInfo .phase-title {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        #dialogue {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 25px 35px;
+            max-width: 650px;
+            display: none;
+            pointer-events: all;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.4);
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        #dialogue.show {
+            display: block;
+            animation: glitchIn 0.3s ease;
+        }
+
+        @keyframes glitchIn {
+            0% { transform: translateX(-50%) translateY(20px) skew(2deg); opacity: 0; }
+            50% { transform: translateX(-50%) translateY(-5px) skew(-1deg); }
+            100% { transform: translateX(-50%) translateY(0) skew(0deg); opacity: 1; }
+        }
+
+        #dialogueText {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            font-size: 18px;
+            font-weight: 400;
+        }
+
+        #dialogueButton {
+            background: transparent;
+            border: 2px solid #00ff41;
+            padding: 12px 30px;
+            color: #00ff41;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        #dialogueButton:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        #puzzleOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 20;
+        }
+
+        #puzzleOverlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #puzzleContent {
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff41;
+            padding: 40px;
+            max-width: 600px;
+            color: #00ff41;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
+        }
+
+        #puzzleContent h2 {
+            margin-bottom: 25px;
+            font-size: 32px;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 15px #00ff41;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+
+        #puzzleContent p {
+            margin-bottom: 30px;
+            font-size: 20px;
+            line-height: 1.6;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .password-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .password-option {
+            background: rgba(0, 255, 65, 0.05);
+            border: 2px solid #00ff41;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 18px;
+            color: #00ff41;
+            font-weight: 600;
+            font-family: 'Rajdhani', sans-serif;
+            text-align: left;
+        }
+
+        .password-option:hover {
+            background: rgba(0, 255, 65, 0.15);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+            transform: translateX(10px);
+        }
+
+        .password-option.correct {
+            background: rgba(0, 255, 65, 0.3);
+            border-color: #00ff41;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+        }
+
+        .password-option.wrong {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff0000;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #00ff41;
+            padding: 15px;
+            color: #00ff41;
+            font-size: 13px;
+            pointer-events: none;
+            font-family: 'Orbitron', monospace;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+
+        #startScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            color: #00ff41;
+        }
+
+        #startScreen.hide {
+            display: none;
+        }
+
+        #startScreen h1 {
+            font-size: 64px;
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41;
+            animation: glitch 3s infinite;
+            letter-spacing: 5px;
+            font-weight: 900;
+        }
+
+        @keyframes glitch {
+            0%, 100% { text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41; }
+            25% { text-shadow: -2px 0 30px #00ff41, 2px 0 60px #ff0000; }
+            50% { text-shadow: 2px 0 30px #00ff41, -2px 0 60px #00ffff; }
+            75% { text-shadow: 0 2px 30px #00ff41, 0 -2px 60px #ff00ff; }
+        }
+
+        #startScreen .subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            font-family: 'Rajdhani', sans-serif;
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        #startScreen p {
+            font-size: 18px;
+            margin-bottom: 50px;
+            text-align: center;
+            max-width: 600px;
+            padding: 0 20px;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        #startButton {
+            background: transparent;
+            border: 3px solid #00ff41;
+            padding: 20px 60px;
+            color: #00ff41;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 24px;
+            font-family: 'Orbitron', monospace;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        #startButton:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 40px #00ff41;
+            transform: scale(1.05);
+        }
+
+        #leaderboard {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff41;
+            padding: 20px;
+            min-width: 250px;
+            max-height: 400px;
+            overflow-y: auto;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+            display: none;
+            z-index: 15;
+        }
+
+        #leaderboard.show {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateY(-50%) translateX(100px); opacity: 0; }
+            to { transform: translateY(-50%) translateX(0); opacity: 1; }
+        }
+
+        #leaderboard h3 {
+            font-family: 'Orbitron', monospace;
+            color: #00ff41;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        .leaderboard-entry {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: rgba(0, 255, 65, 0.05);
+            border-left: 3px solid #00ff41;
+            font-family: 'Rajdhani', sans-serif;
+            color: #00ff41;
+        }
+
+        .leaderboard-entry:hover {
+            background: rgba(0, 255, 65, 0.1);
+        }
+
+        .leaderboard-entry .rank {
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .leaderboard-entry.top3 {
+            border-left-width: 5px;
+            background: rgba(0, 255, 65, 0.15);
+        }
+
+        #phaseSelect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #00ff41;
+            padding: 40px;
+            display: none;
+            z-index: 25;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.4);
+        }
+
+        #phaseSelect.show {
+            display: block;
+        }
+
+        #phaseSelect h2 {
+            color: #00ff41;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .phase-button {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: block;
+            width: 100%;
+        }
+
+        .phase-button:hover:not(:disabled) {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .phase-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        #victoryScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+            color: #00ff41;
+        }
+
+        #victoryScreen.show {
+            display: flex;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #victoryScreen h1 {
+            font-size: 56px;
+            font-family: 'Orbitron', monospace;
+            text-shadow: 0 0 30px #00ff41;
+            margin-bottom: 20px;
+        }
+
+        #victoryScreen .score-display {
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        #playerNameInput {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 15px 25px;
+            font-size: 20px;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+            margin-bottom: 20px;
+            width: 300px;
+        }
+
+        #playerNameInput::placeholder {
+            color: rgba(0, 255, 65, 0.5);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrixBg"></canvas>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+        
+        <div id="startScreen">
+            <h1>⚡ CIBER GUARDIÕES ⚡</h1>
+            <div class="subtitle">THE DIGITAL DEFENSE</div>
+            <p>Bem-vindo à Matrix Digital. O Ciber Reino está sob ataque.<br>Apenas os verdadeiros Guardiões podem proteger os dados.</p>
+            <button id="startButton">INICIAR MISSÃO</button>
+        </div>
+
+        <div id="ui">
+            <div class="ui-panel" id="score">
+                <div>SABEDORIA DIGITAL</div>
+                <div style="font-size: 24px; margin-top: 5px;">▸ <span id="scoreValue">0</span> PTS</div>
+            </div>
+            <div class="ui-panel" id="phaseInfo">
+                <div class="phase-title">FASE <span id="currentPhase">1</span></div>
+                <div id="phaseName">FORTALEZA DAS SENHAS</div>
+            </div>
+        </div>
+
+        <div id="dialogue">
+            <div id="dialogueText"></div>
+            <button id="dialogueButton">CONTINUAR ▸</button>
+        </div>
+
+        <div id="puzzleOverlay">
+            <div id="puzzleContent"></div>
+        </div>
+
+        <div id="leaderboard">
+            <h3>🏆 TOP GUARDIÕES</h3>
+            <div id="leaderboardList"></div>
+        </div>
+
+        <div id="phaseSelect">
+            <h2>SELECIONAR FASE</h2>
+            <button class="phase-button" onclick="selectPhase(1)">FASE 1: Fortaleza das Senhas</button>
+            <button class="phase-button" onclick="selectPhase(2)" id="phase2Btn" disabled>FASE 2: Labirinto dos Links</button>
+            <button class="phase-button" onclick="selectPhase(3)" id="phase3Btn" disabled>FASE 3: Praça da Privacidade</button>
+        </div>
+
+        <div id="victoryScreen">
+            <h1>🎉 MISSÃO COMPLETA! 🎉</h1>
+            <div class="score-display">Pontuação Final: <span id="finalScore">0</span></div>
+            <input type="text" id="playerNameInput" placeholder="Digite seu nome" maxlength="20">
+            <div class="action-buttons">
+                <button class="phase-button" onclick="saveScore()">SALVAR NO RANKING</button>
+                <button class="phase-button" onclick="nextPhase()">PRÓXIMA FASE ▸</button>
+            </div>
+        </div>
+
+        <div id="controls">
+            ⌨️ CONTROLES<br>
+            WASD / ↑←↓→ MOVER<br>
+            ESPAÇO INTERAGIR<br>
+            L RANKING
+        </div>
+    </div>
+
+    <script>
+        // Matrix Background Effect
+        const matrixCanvas = document.getElementById('matrixBg');
+        const matrixCtx = matrixCanvas.getContext('2d');
+        matrixCanvas.width = window.innerWidth;
+        matrixCanvas.height = window.innerHeight;
+
+        const matrixChars = '01アイウエオカキクケコサシスセソタチツテト';
+        const fontSize = 14;
+        const columns = matrixCanvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+            matrixCtx.fillStyle = '#00ff41';
+            matrixCtx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                matrixCtx.fillText(char, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 35);
+
+        // Main Game
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Game State
+        const game = {
+            score: 0,
+            currentPhase: 1,
+            maxPhase: 1,
+            puzzlesCompleted: 0,
+            phase1Complete: false,
+            phase2Complete: false,
+            phase3Complete: false
+        };
+
+        // Player with animations
+        const player = {
+            x: 100,
+            y: 350,
+            width: 40,
+            height: 40,
+            speed: 4,
+            direction: 'right',
+            animFrame: 0,
+            animCounter: 0
+        };
+
+        const keys = {
+            w: false, a: false, s: false, d: false,
+            ArrowUp: false, ArrowLeft: false, ArrowDown: false, ArrowRight: false,
+            Space: false, l: false
+        };
+
+        // Phase 1 Data
+        const npcs = [
+            {
+                x: 500,
+                y: 300,
+                width: 50,
+                height: 50,
+                type: 'owl',
+                name: 'Cyber Owl',
+                hasDialogue: true,
+                dialogue: [
+                    '🦉 Saudações, Guardião. Eu sou Cyber Owl, sua IA mentora.',
+                    'A Fortaleza das Senhas é o primeiro teste. Aqui você aprenderá a criar defesas impenetráveis.',
+                    'Senhas fracas são vulnerabilidades no sistema. Hackers exploram essas falhas.',
+                    'Localize os nódulos de dados (cristais) e resolva os desafios para fortalecer suas habilidades.'
+                ],
+                talked: false
+            }
+        ];
+
+        const puzzleObjects = [
+            {
+                x: 200, y: 550, width: 50, height: 50,
+                type: 'puzzle1', completed: false,
+                question: 'ANÁLISE DE SENHA: Qual destas é a mais SEGURA?',
+                options: [
+                    { text: '123456', correct: false, feedback: 'FALHA DE SEGURANÇA! Esta senha é crackeada em menos de 1 segundo.' },
+                    { text: 'senha123', correct: false, feedback: 'VULNERÁVEL! Palavras comuns são encontradas em dicionários de ataque.' },
+                    { text: 'C1b3r@Grd#2025!Sx', correct: true, feedback: 'ACESSO CONCEDIDO! Senha forte: 16 caracteres, maiúsculas, minúsculas, números e símbolos.' },
+                    { text: 'maria2010', correct: false, feedback: 'RISCO ALTO! Informações pessoais são facilmente descobertas em redes sociais.' }
+                ]
+            },
+            {
+                x: 800, y: 550, width: 50, height: 50,
+                type: 'puzzle2', completed: false,
+                question: 'PROTOCOLO DE SEGURANÇA: O que torna uma senha FORTE?',
+                options: [
+                    { text: 'Curta e memorável', correct: false, feedback: 'NEGATIVO! Senhas curtas têm menos combinações possíveis.' },
+                    { text: 'Usar nome + data de nascimento', correct: false, feedback: 'CRÍTICO! Dados públicos são o primeiro alvo dos hackers.' },
+                    { text: 'Mínimo 12 caracteres: letras, números, símbolos', correct: true, feedback: 'CORRETO! Complexidade = Segurança exponencial.' },
+                    { text: 'Mesma senha em todos os sites', correct: false, feedback: 'CATASTRÓFICO! Um vazamento compromete todas as contas.' }
+                ]
+            },
+            {
+                x: 500, y: 100, width: 50, height: 50,
+                type: 'puzzle3', completed: false,
+                question: 'POLÍTICA DE ACESSO: Quando compartilhar sua senha?',
+                options: [
+                    { text: 'Com amigos próximos', correct: false, feedback: 'NEGADO! Confiança não é criptografia.' },
+                    { text: 'Apenas com pais/responsáveis', correct: true, feedback: 'AUTORIZADO! Menores devem ter supervisão adulta responsável.' },
+                    { text: 'Se pedirem educadamente online', correct: false, feedback: 'ALERTA VERMELHO! Isto é uma tática de engenharia social!' },
+                    { text: 'Por mensagem privada', correct: false, feedback: 'FALHA! Mensagens podem ser interceptadas ou hackeadas.' }
+                ]
+            }
+        ];
+
+        const boss = {
+            x: 900, y: 150, width: 60, height: 60,
+            active: false, defeated: false, hp: 3, maxHp: 3
+        };
+
+        let particles = [];
+        let gridParticles = [];
+
+        // Initialize grid particles
+        for (let i = 0; i < 50; i++) {
+            gridParticles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 2 + 1
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('startButton').addEventListener('click', () => {
+            document.getElementById('startScreen').classList.add('hide');
+            showDialogue(npcs[0].dialogue[0]);
+        });
+
+        document.getElementById('dialogueButton').addEventListener('click', hideDialogue);
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key in keys) {
+                keys[e.key] = true;
+                e.preventDefault();
+            }
+            if (e.key === ' ' || e.key === 'Space') {
+                keys.Space = true;
+                e.preventDefault();
+                checkInteraction();
+            }
+            if (e.key === 'l' || e.key === 'L') {
+                toggleLeaderboard();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key in keys) keys[e.key] = false;
+            if (e.key === ' ' || e.key === 'Space') keys.Space = false;
+        });
+
+        // Functions
+        function showDialogue(text) {
+            document.getElementById('dialogueText').textContent = text;
+            document.getElementById('dialogue').classList.add('show');
+        }
+
+        function hideDialogue() {
+            document.getElementById('dialogue').classList.remove('show');
+        }
+
+        function showPuzzle(puzzle) {
+            const overlay = document.getElementById('puzzleOverlay');
+            const content = document.getElementById('puzzleContent');
+            
+            let html = `<h2>◢ DESAFIO DE SEGURANÇA ◣</h2><p>${puzzle.question}</p><div class="password-options">`;
+            
+            puzzle.options.forEach((option, index) => {
+                html += `<button class="password-option" onclick="checkAnswer(${puzzleObjects.indexOf(puzzle)}, ${index})">▸ ${option.text}</button>`;
+            });
+            
+            html += '</div>';
+            content.innerHTML = html;
+            overlay.classList.add('show');
+        }
+
+        window.checkAnswer = function(puzzleIndex, optionIndex) {
+            const puzzle = puzzleObjects[puzzleIndex];
+            const option = puzzle.options[optionIndex];
+            const buttons = document.querySelectorAll('.password-option');
+            
+            buttons[optionIndex].classList.add(option.correct ? 'correct' : 'wrong');
+            
+            setTimeout(() => {
+                if (option.correct) {
+                    puzzle.completed = true;
+                    game.score += 100;
+                    game.puzzlesCompleted++;
+                    updateScore();
+                    createExplosion(puzzle.x + 25, puzzle.y + 25, '#00ff41');
+                    showDialogue(option.feedback);
+                    
+                    if (game.puzzlesCompleted === puzzleObjects.length) {
+                        setTimeout(activateBoss, 2000);
+                    }
+                } else {
+                    showDialogue(option.feedback + ' Tente novamente!');
+                }
+                document.getElementById('puzzleOverlay').classList.remove('show');
+            }, 1500);
+        };
+
+        function activateBoss() {
+            boss.active = true;
+            showDialogue('⚠️ AMEAÇA DETECTADA! O vírus "Senha Fraca" invadiu o sistema! Neutralize-o!');
+        }
+
+        function defeatBoss() {
+            boss.hp--;
+            createExplosion(boss.x + 30, boss.y + 30, '#ff0000');
+            
+            if (boss.hp <= 0) {
+                boss.defeated = true;
+                game.score += 500;
+                game.phase1Complete = true;
+                game.maxPhase = 2;
+                updateScore();
+                createExplosion(boss.x + 30, boss.y + 30, '#00ff41');
+                showVictoryScreen();
+            }
+        }
+
+        function checkInteraction() {
+            npcs.forEach(npc => {
+                if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
+                    npc.dialogue.forEach((text, index) => {
+                        setTimeout(() => showDialogue(text), index * 3000);
+                    });
+                    npc.talked = true;
+                }
+            });
+
+            puzzleObjects.forEach(puzzle => {
+                if (isNear(player, puzzle) && !puzzle.completed) {
+                    showPuzzle(puzzle);
+                }
+            });
+
+            if (boss.active && !boss.defeated && isNear(player, boss)) {
+                defeatBoss();
+            }
+        }
+
+        function isNear(obj1, obj2, distance = 70) {
+            const dx = (obj1.x + obj1.width/2) - (obj2.x + obj2.width/2);
+            const dy = (obj1.y + obj1.height/2) - (obj2.y + obj2.height/2);
+            return Math.sqrt(dx*dx + dy*dy) < distance;
+        }
+
+        function updateScore() {
+            document.getElementById('scoreValue').textContent = game.score;
+        }
+
+        function createExplosion(x, y, color) {
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: (Math.random() - 0.5) * 8,
+                    vy: (Math.random() - 0.5) * 8,
+                    life: 60,
+                    color: color,
+                    size: Math.random() * 4 + 2
+                });
+            }
+        }
+
+        function updatePlayer() {
+            let moving = false;
+            
+            if (keys.w || keys.ArrowUp) {
+                player.y -= player.speed;
+                player.direction = 'up';
+                moving = true;
+            }
+            if (keys.s || keys.ArrowDown) {
+                player.y += player.speed;
+                player.direction = 'down';
+                moving = true;
+            }
+            if (keys.a || keys.ArrowLeft) {
+                player.x -= player.speed;
+                player.direction = 'left';
+                moving = true;
+            }
+            if (keys.d || keys.ArrowRight) {
+                player.x += player.speed;
+                player.direction = 'right';
+                moving = true;
+            }
+
+            if (moving) {
+                player.animCounter++;
+                if (player.animCounter > 10) {
+                    player.animFrame = (player.animFrame + 1) % 4;
+                    player.animCounter = 0;
+                }
+            }
+
+            player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
+            player.y = Math.max(0, Math.min(canvas.height - player.height, player.y));
+        }
+
+        function drawPlayer() {
+            const glowIntensity = Math.sin(Date.now() / 200) * 5 + 10;
+            
+            ctx.shadowColor = '#00ff41';
+            ctx.shadowBlur = glowIntensity;
+            
+            // Body
+            ctx.fillStyle = '#00ff41';
+            ctx.fillRect(player.x + 5, player.y + 5, player.width - 10, player.height - 10);
+            
+            // Head
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(player.x + 10, player.y + 8, player.width - 20, 15);
+            
+            // Eyes with direction
+            ctx.fillStyle = '#00ff41';
+            if (player.direction === 'right') {
+                ctx.fillRect(player.x + 22, player.y + 12, 6, 6);
+            } else if (player.direction === 'left') {
+                ctx.fillRect(player.x + 12, player.y + 12, 6, 6);
+            } else {
+                ctx.fillRect(player.x + 14, player.y + 12, 4, 6);
+                ctx.fillRect(player.x + 22, player.y + 12, 4, 6);
+            }
+            
+            // Visor line
+            ctx.strokeStyle = '#00ff41';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(player.x + 8, player.y + 16);
+            ctx.lineTo(player.x + 32, player.y + 16);
+            ctx.stroke();
+            
+            // Arms
+            ctx.fillStyle = '#00ff41';
+            ctx.fillRect(player.x + 2, player.y + 24, 4, 10);
+            ctx.fillRect(player.x + 34, player.y + 24, 4, 10);
+            
+            // Legs with animation
+            const legOffset = player.animFrame % 2 === 0 ? 2 : -2;
+            ctx.fillRect(player.x + 12 + legOffset, player.y + 35, 5, 5);
+            ctx.fillRect(player.x + 23 - legOffset, player.y + 35, 5, 5);
+            
+            ctx.shadowBlur = 0;
+        }
+
+        function drawNPC(npc) {
+            const pulse = Math.sin(Date.now() / 300) * 3;
+            
+            ctx.shadowColor = '#f39c12';
+            ctx.shadowBlur = 15;
+            
+            // Owl body
+            ctx.fillStyle = '#f39c12';
+            ctx.beginPath();
+            ctx.arc(npc.x + 25, npc.y + 25, 20 + pulse, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Eyes
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(npc.x + 18, npc.y + 20, 7, 0, Math.PI * 2);
+            ctx.arc(npc.x + 32, npc.y + 20, 7, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(npc.x + 18, npc.y + 20, 3, 0, Math.PI * 2);
+            ctx.arc(npc.x + 32, npc.y + 20, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Beak
+            ctx.fillStyle = '#e67e22';
+            ctx.beginPath();
+            ctx.moveTo(npc.x + 25, npc.y + 26);
+            ctx.lineTo(npc.x + 20, npc.y + 32);
+            ctx.lineTo(npc.x + 30, npc.y + 32);
+            ctx.fill();
+            
+            // Holographic effect
+            ctx.strokeStyle = 'rgba(243, 156, 18, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(npc.x + 25, npc.y + 25, 28, 0, Math.PI * 2);
+            ctx.stroke();
+            
+            ctx.shadowBlur = 0;
+        }
+
+        function drawPuzzle(puzzle) {
+            const pulse = Math.sin(Date.now() / 400) * 5;
+            
+            if (puzzle.completed) {
+                ctx.shadowColor = '#00ff41';
+                ctx.fillStyle = 'rgba(0, 255, 65, 0.3)';
+            } else {
+                ctx.shadowColor = '#9b59b6';
+                ctx.fillStyle = '#9b59b6';
+            }
+            
+            ctx.shadowBlur = 20 + pulse;
+            
+            // Diamond shape
+            ctx.beginPath();
+            ctx.moveTo(puzzle.x + 25, puzzle.y);
+            ctx.lineTo(puzzle.x + 50, puzzle.y + 25);
+            ctx.lineTo(puzzle.x + 25, puzzle.y + 50);
+            ctx.lineTo(puzzle.x, puzzle.y + 25);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Inner glow
+            ctx.fillStyle = puzzle.completed ? '#00ff41' : '#c39bd3';
+            ctx.beginPath();
+            ctx.moveTo(puzzle.x + 25, puzzle.y + 10);
+            ctx.lineTo(puzzle.x + 40, puzzle.y + 25);
+            ctx.lineTo(puzzle.x + 25, puzzle.y + 40);
+            ctx.lineTo(puzzle.x + 10, puzzle.y + 25);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Symbol
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = '#000';
+            ctx.font = 'bold 20px Orbitron';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(puzzle.completed ? '✓' : '?', puzzle.x + 25, puzzle.y + 25);
+            
+            // Data particles around puzzle
+            if (!puzzle.completed) {
+                for (let i = 0; i < 3; i++) {
+                    const angle = (Date.now() / 1000 + i * 2) % (Math.PI * 2);
+                    const px = puzzle.x + 25 + Math.cos(angle) * 35;
+                    const py = puzzle.y + 25 + Math.sin(angle) * 35;
+                    ctx.fillStyle = '#9b59b6';
+                    ctx.fillRect(px, py, 3, 3);
+                }
+            }
+        }
+
+        function drawBoss() {
+            if (!boss.active || boss.defeated) return;
+            
+            const shake = boss.hp < 2 ? Math.sin(Date.now() / 50) * 2 : 0;
+            
+            ctx.shadowColor = '#ff0000';
+            ctx.shadowBlur = 30;
+            
+            // Boss body
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(boss.x + shake, boss.y, boss.width, boss.height);
+            
+            // Corrupted data effect
+            ctx.fillStyle = '#c0392b';
+            for (let i = 0; i < 5; i++) {
+                const offset = Math.sin(Date.now() / 200 + i) * 3;
+                ctx.fillRect(boss.x + 10 + i * 8 + offset, boss.y + 10, 6, 40);
+            }
+            
+            // Evil face
+            ctx.fillStyle = '#000';
+            ctx.fillRect(boss.x + 15, boss.y + 18, 10, 10);
+            ctx.fillRect(boss.x + 35, boss.y + 18, 10, 10);
+            
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(boss.x + 18, boss.y + 21, 4, 4);
+            ctx.fillRect(boss.x + 38, boss.y + 21, 4, 4);
+            
+            // Evil smile
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(boss.x + 30, boss.y + 35, 12, 0, Math.PI);
+            ctx.stroke();
+            
+            // HP Bar
+            ctx.shadowBlur = 0;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(boss.x - 5, boss.y - 15, boss.width + 10, 8);
+            
+            ctx.fillStyle = '#e74c3c';
+            const hpWidth = ((boss.width + 10) * boss.hp) / boss.maxHp;
+            ctx.fillRect(boss.x - 5, boss.y - 15, hpWidth, 8);
+            
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(boss.x - 5, boss.y - 15, boss.width + 10, 8);
+        }
+
+        function updateParticles() {
+            particles = particles.filter(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.2;
+                p.life--;
+                return p.life > 0;
+            });
+            
+            gridParticles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            });
+        }
+
+        function drawParticles() {
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.life / 60;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+            });
+            ctx.globalAlpha = 1;
+        }
+
+        function drawBackground() {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Grid lines
+            ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(canvas.width, i);
+                ctx.stroke();
+            }
+            
+            // Floating grid particles
+            gridParticles.forEach(p => {
+                ctx.fillStyle = '#00ff41';
+                ctx.globalAlpha = 0.5;
+                ctx.fillRect(p.x, p.y, p.size, p.size);
+            });
+            ctx.globalAlpha = 1;
+            
+            // Title
+            ctx.fillStyle = 'rgba(0, 255, 65, 0.05)';
+            ctx.font = 'bold 36px Orbitron';
+            ctx.textAlign = 'center';
+            ctx.fillText('◢ FORTALEZA DAS SENHAS ◣', canvas.width/2, 50);
+        }
+
+        function toggleLeaderboard() {
+            const lb = document.getElementById('leaderboard');
+            if (lb.classList.contains('show')) {
+                lb.classList.remove('show');
+            } else {
+                loadLeaderboard();
+                lb.classList.add('show');
+            }
+        }
+
+        async function loadLeaderboard() {
+            try {
+                const result = await window.storage.list('player:', true);
+                if (result && result.keys) {
+                    const scores = [];
+                    for (const key of result.keys) {
+                        const data = await window.storage.get(key, true);
+                        if (data && data.value) {
+                            scores.push(JSON.parse(data.value));
+                        }
+                    }
+                    
+                    scores.sort((a, b) => b.score - a.score);
+                    displayLeaderboard(scores.slice(0, 10));
+                }
+            } catch (error) {
+                displayLeaderboard([]);
+            }
+        }
+
+        function displayLeaderboard(scores) {
+            const list = document.getElementById('leaderboardList');
+            if (scores.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: rgba(0,255,65,0.5); padding: 20px;">Nenhum registro ainda</div>';
+                return;
+            }
+            
+            list.innerHTML = scores.map((entry, index) => `
+                <div class="leaderboard-entry ${index < 3 ? 'top3' : ''}">
+                    <span class="rank">#${index + 1}</span>
+                    <span>${entry.name}</span>
+                    <span>${entry.score} pts</span>
+                </div>
+            `).join('');
+        }
+
+        function showVictoryScreen() {
+            document.getElementById('finalScore').textContent = game.score;
+            document.getElementById('victoryScreen').classList.add('show');
+        }
+
+        async function saveScore() {
+            const name = document.getElementById('playerNameInput').value.trim();
+            if (!name) {
+                alert('Digite seu nome para salvar!');
+                return;
+            }
+            
+            const playerData = {
+                name: name,
+                score: game.score,
+                phase: game.currentPhase,
+                timestamp: Date.now()
+            };
+            
+            try {
+                const key = `player:${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                await window.storage.set(key, JSON.stringify(playerData), true);
+                alert('✅ Pontuação salva no ranking!');
+                loadLeaderboard();
+                document.getElementById('leaderboard').classList.add('show');
+            } catch (error) {
+                alert('Erro ao salvar pontuação: ' + error.message);
+            }
+        }
+
+        window.saveScore = saveScore;
+
+        function nextPhase() {
+            if (game.phase1Complete && game.currentPhase === 1) {
+                alert('🔒 Fase 2: Em desenvolvimento!\nEm breve: Labirinto dos Links');
+            }
+        }
+
+        window.nextPhase = nextPhase;
+
+        function selectPhase(phase) {
+            if (phase <= game.maxPhase) {
+                game.currentPhase = phase;
+                document.getElementById('phaseSelect').classList.remove('show');
+                resetGame();
+            }
+        }
+
+        window.selectPhase = selectPhase;
+
+        function resetGame() {
+            player.x = 100;
+            player.y = 350;
+            game.puzzlesCompleted = 0;
+            boss.active = false;
+            boss.defeated = false;
+            boss.hp = boss.maxHp;
+            puzzleObjects.forEach(p => p.completed = false);
+            npcs.forEach(n => n.talked = false);
+            particles = [];
+            document.getElementById('victoryScreen').classList.remove('show');
+        }
+
+        function gameLoop() {
+            updatePlayer();
+            updateParticles();
+            
+            drawBackground();
+            drawParticles();
+            
+            npcs.forEach(drawNPC);
+            puzzleObjects.forEach(drawPuzzle);
+            drawBoss();
+            drawPlayer();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
