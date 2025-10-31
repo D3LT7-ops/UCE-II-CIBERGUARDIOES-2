@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciber Guardiões - Jogo</title>
+    <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+    <canvas id="matrixBg"></canvas>
+    
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="1000" height="700"></canvas>
+        
+        <!-- UI Superior -->
+        <div id="ui">
+            <div class="ui-panel" id="scorePanel">
+                <div>SABEDORIA DIGITAL</div>
+                <div style="font-size: 24px; margin-top: 5px;">▸ <span id="scoreValue">0</span> PTS</div>
+            </div>
+            <div class="ui-panel" id="phaseInfo">
+                <div class="phase-title">FASE <span id="currentPhase">1</span>/3</div>
+                <div id="phaseName">FORTALEZA DAS SENHAS</div>
+                <div style="font-size: 12px; margin-top: 5px;">
+                    Jogador: <span id="playerNameDisplay"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controles de Som -->
+        <div id="audioControls">
+            <button id="muteBtn" title="Mutar/Desmutar">🔊</button>
+            <input type="range" id="volumeSlider" min="0" max="100" value="50" title="Volume">
+        </div>
+
+        <!-- Diálogo -->
+        <div id="dialogue">
+            <div id="dialogueText"></div>
+            <button id="dialogueButton">CONTINUAR ▸</button>
+        </div>
+
+        <!-- Overlay de Puzzle -->
+        <div id="puzzleOverlay">
+            <div id="puzzleContent"></div>
+        </div>
+
+        <!-- Controles do Jogo -->
+        <div id="controls">
+            ⌨️ CONTROLES<br>
+            WASD / ↑←↓→ MOVER<br>
+            ESPAÇO INTERAGIR<br>
+            ESC PAUSAR
+        </div>
+
+        <!-- Tela de Vitória da Fase -->
+        <div id="phaseVictoryScreen">
+            <h1>🎉 FASE COMPLETA! 🎉</h1>
+            <div class="phase-score">
+                Pontuação: <span id="phaseScore">0</span> pts
+            </div>
+            <div class="phase-message" id="phaseMessage"></div>
+            <button class="action-btn" id="nextPhaseBtn">PRÓXIMA FASE ▸</button>
+        </div>
+
+        <!-- Tela de Vitória Final -->
+        <div id="finalVictoryScreen">
+            <h1>🏆 MISSÃO COMPLETA! 🏆</h1>
+            <div class="final-message">
+                Parabéns, <span id="finalPlayerName"></span>!<br>
+                Você protegeu o Ciber Reino com sucesso!
+            </div>
+            <div class="final-score">
+                PONTUAÇÃO FINAL: <span id="finalScore">0</span> PTS
+            </div>
+            <div class="action-buttons">
+                <button class="action-btn" onclick="window.location.href='ranking.html'">
+                    🏆 VER RANKING
+                </button>
+                <button class="action-btn" onclick="window.location.href='index.html'">
+                    🏠 MENU PRINCIPAL
+                </button>
+                <button class="action-btn" onclick="window.location.href='credits.html'">
+                    ℹ️ CRÉDITOS
+                </button>
+            </div>
+        </div>
+
+        <!-- Tela de Pausa -->
+        <div id="pauseScreen">
+            <h2>⏸️ JOGO PAUSADO</h2>
+            <div class="pause-buttons">
+                <button class="action-btn" id="resumeBtn">CONTINUAR</button>
+                <button class="action-btn" onclick="window.location.href='index.html'">SAIR</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/matrix-bg.js"></script>
+    <script src="js/game-engine.js"></script>
+    <script src="js/audio-manager.js"></script>
+    <script src="js/phase1.js"></script>
+    <script src="js/phase2.js"></script>
+    <script src="js/phase3.js"></script>
+    <script src="js/game-main.js"></script>
+</body>
+</html>
