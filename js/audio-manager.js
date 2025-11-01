@@ -32,7 +32,7 @@ class AudioManager {
         });
     }
 
-    // Gerar tons sintetizados (já que não temos arquivos de áudio)
+    // Gerar tons sintetizados
     playTone(frequency, duration, type = 'sine') {
         if (!this.audioContext || this.muted) return;
 
@@ -62,9 +62,9 @@ class AudioManager {
     }
 
     playSuccess() {
-        this.playTone(523.25, 0.1, 'sine'); // C
-        setTimeout(() => this.playTone(659.25, 0.1, 'sine'), 100); // E
-        setTimeout(() => this.playTone(783.99, 0.2, 'sine'), 200); // G
+        this.playTone(523.25, 0.1, 'sine');
+        setTimeout(() => this.playTone(659.25, 0.1, 'sine'), 100);
+        setTimeout(() => this.playTone(783.99, 0.2, 'sine'), 200);
     }
 
     playError() {
@@ -99,7 +99,7 @@ class AudioManager {
         }
     }
 
-    // Música de fundo (loop de tons)
+    // Música de fundo
     startBackgroundMusic() {
         if (this.music) return;
         

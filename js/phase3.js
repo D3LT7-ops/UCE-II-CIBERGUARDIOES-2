@@ -69,7 +69,6 @@ function drawPhase3NPCs() {
         ctx.shadowColor = '#9b59b6';
         ctx.shadowBlur = 15;
         
-        // Cadeado
         ctx.fillStyle = '#9b59b6';
         ctx.fillRect(npc.x + 12, npc.y + 20, 26, 25);
         
@@ -79,7 +78,6 @@ function drawPhase3NPCs() {
         ctx.strokeStyle = '#9b59b6';
         ctx.stroke();
         
-        // Buraco da fechadura
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.arc(npc.x + 25, npc.y + 30, 4, 0, Math.PI * 2);
@@ -87,7 +85,6 @@ function drawPhase3NPCs() {
         
         ctx.fillRect(npc.x + 23, npc.y + 33, 4, 8);
         
-        // Brilho de proteção
         ctx.strokeStyle = 'rgba(155, 89, 182, 0.5)';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -112,7 +109,6 @@ function drawPhase3Puzzles() {
         
         ctx.shadowBlur = 20 + pulse;
         
-        // Forma de octógono
         ctx.beginPath();
         for (let i = 0; i < 8; i++) {
             const angle = (Math.PI / 4) * i;
@@ -124,7 +120,6 @@ function drawPhase3Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 18px Orbitron';
@@ -132,7 +127,6 @@ function drawPhase3Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '🔐', puzzle.x + 25, puzzle.y + 25);
         
-        // Partículas de dados
         if (!puzzle.completed) {
             for (let i = 0; i < 5; i++) {
                 const angle = (Date.now() / 1000 + i * (Math.PI * 2 / 5)) % (Math.PI * 2);
@@ -153,18 +147,15 @@ function drawPhase3Boss() {
     ctx.shadowColor = '#8e44ad';
     ctx.shadowBlur = 30;
     
-    // Corpo do Data Thief
     ctx.fillStyle = '#8e44ad';
     ctx.fillRect(phase3Data.boss.x + shake, phase3Data.boss.y, phase3Data.boss.width, phase3Data.boss.height);
     
-    // Dados roubados
     ctx.fillStyle = '#71368a';
     for (let i = 0; i < 6; i++) {
         const offset = Math.sin(Date.now() / 150 + i) * 4;
         ctx.fillRect(phase3Data.boss.x + 5 + i * 8, phase3Data.boss.y + 5 + offset, 6, 6);
     }
     
-    // Olhos ladrões
     ctx.fillStyle = '#fff';
     ctx.fillRect(phase3Data.boss.x + 12, phase3Data.boss.y + 25, 14, 14);
     ctx.fillRect(phase3Data.boss.x + 34, phase3Data.boss.y + 25, 14, 14);
@@ -173,7 +164,6 @@ function drawPhase3Boss() {
     ctx.fillRect(phase3Data.boss.x + 16, phase3Data.boss.y + 29, 6, 6);
     ctx.fillRect(phase3Data.boss.x + 38, phase3Data.boss.y + 29, 6, 6);
     
-    // Barra de HP
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
     ctx.fillRect(phase3Data.boss.x - 5, phase3Data.boss.y - 15, phase3Data.boss.width + 10, 8);
@@ -190,7 +180,6 @@ function drawPhase3Boss() {
 function checkPhase3Interactions() {
     if (gameState.paused) return;
     
-    // NPCs
     phase3Data.npcs.forEach(npc => {
         if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
             audioManager.playInteract();
@@ -201,7 +190,6 @@ function checkPhase3Interactions() {
         }
     });
 
-    // Puzzles
     phase3Data.puzzles.forEach((puzzle, index) => {
         if (isNear(player, puzzle) && !puzzle.completed) {
             audioManager.playInteract();
@@ -209,7 +197,6 @@ function checkPhase3Interactions() {
         }
     });
 
-    // Boss
     if (phase3Data.boss.active && !phase3Data.boss.defeated && isNear(player, phase3Data.boss)) {
         phase3Data.boss.hp--;
         audioManager.playBossHit();

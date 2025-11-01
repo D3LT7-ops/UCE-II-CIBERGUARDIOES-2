@@ -1,0 +1,321 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: #000;
+    color: #00ff41;
+    overflow-x: hidden;
+}
+
+#matrixBg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.15;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.menu-container {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.3), inset 0 0 40px rgba(0, 255, 65, 0.1);
+    padding: 60px 80px;
+    text-align: center;
+    max-width: 700px;
+    width: 100%;
+    animation: glitchIn 0.5s ease;
+}
+
+@keyframes glitchIn {
+    0% { transform: translateY(20px) skew(2deg); opacity: 0; }
+    50% { transform: translateY(-5px) skew(-1deg); }
+    100% { transform: translateY(0) skew(0deg); opacity: 1; }
+}
+
+.game-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 64px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41;
+    animation: glitch 3s infinite;
+    letter-spacing: 5px;
+}
+
+@keyframes glitch {
+    0%, 100% { text-shadow: 0 0 30px #00ff41, 0 0 60px #00ff41; }
+    25% { text-shadow: -2px 0 30px #00ff41, 2px 0 60px #ff0000; }
+    50% { text-shadow: 2px 0 30px #00ff41, -2px 0 60px #00ffff; }
+    75% { text-shadow: 0 2px 30px #00ff41, 0 -2px 60px #ff00ff; }
+}
+
+.subtitle {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    opacity: 0.8;
+    margin-bottom: 30px;
+}
+
+.description {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    opacity: 0.9;
+}
+
+.player-input-section {
+    margin-bottom: 40px;
+}
+
+.player-input-section label {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-family: 'Orbitron', monospace;
+}
+
+.player-input-section input {
+    background: rgba(0, 255, 65, 0.05);
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    padding: 15px 25px;
+    font-size: 20px;
+    font-family: 'Orbitron', monospace;
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    transition: all 0.3s;
+}
+
+.player-input-section input:focus {
+    outline: none;
+    background: rgba(0, 255, 65, 0.1);
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+}
+
+.player-input-section input::placeholder {
+    color: rgba(0, 255, 65, 0.5);
+}
+
+.error-message {
+    color: #ff0000;
+    font-size: 14px;
+    margin-top: 10px;
+    min-height: 20px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.menu-btn {
+    background: transparent;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    padding: 18px 40px;
+    font-size: 20px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.menu-btn:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 30px #00ff41;
+    transform: translateX(5px);
+}
+
+.menu-btn.primary {
+    border-width: 3px;
+    font-size: 24px;
+    padding: 22px 50px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 65, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(0, 255, 65, 0.6); }
+}
+
+.btn-icon {
+    font-size: 24px;
+}
+
+.version-info {
+    font-size: 14px;
+    opacity: 0.5;
+    font-family: 'Orbitron', monospace;
+}
+
+.ranking-container, .credits-container {
+    background: rgba(0, 0, 0, 0.95);
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+    padding: 40px;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.ranking-container h1, .credits-container h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 48px;
+    text-align: center;
+    margin-bottom: 40px;
+    text-shadow: 0 0 20px #00ff41;
+}
+
+.leaderboard-list {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-bottom: 30px;
+}
+
+.leaderboard-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin-bottom: 10px;
+    background: rgba(0, 255, 65, 0.05);
+    border-left: 3px solid #00ff41;
+    transition: all 0.3s;
+}
+
+.leaderboard-entry:hover {
+    background: rgba(0, 255, 65, 0.15);
+    transform: translateX(5px);
+}
+
+.leaderboard-entry.top3 {
+    border-left-width: 5px;
+    background: rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+}
+
+.leaderboard-entry .rank {
+    font-family: 'Orbitron', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    min-width: 60px;
+}
+
+.leaderboard-entry .name {
+    flex: 1;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.leaderboard-entry .score {
+    font-family: 'Orbitron', monospace;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.empty-ranking {
+    text-align: center;
+    padding: 60px 20px;
+    opacity: 0.5;
+    font-size: 18px;
+}
+
+.credits-content {
+    line-height: 2;
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.credits-content h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: 28px;
+    margin: 30px 0 15px 0;
+    text-shadow: 0 0 10px #00ff41;
+}
+
+.credits-content p {
+    margin-bottom: 15px;
+}
+
+.credits-section {
+    background: rgba(0, 255, 65, 0.05);
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 3px solid #00ff41;
+}
+
+.back-btn {
+    background: transparent;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: block;
+    margin: 0 auto;
+}
+
+.back-btn:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 20px #00ff41;
+}
+
+@media (max-width: 768px) {
+    .menu-container {
+        padding: 40px 30px;
+    }
+    
+    .game-title {
+        font-size: 42px;
+    }
+    
+    .subtitle {
+        font-size: 18px;
+    }
+    
+    .menu-btn {
+        font-size: 16px;
+        padding: 15px 30px;
+    }
+    
+    .menu-btn.primary {
+        font-size: 18px;
+        padding: 18px 35px;
+    }
+}

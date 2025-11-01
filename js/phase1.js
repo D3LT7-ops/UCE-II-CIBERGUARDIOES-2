@@ -69,13 +69,11 @@ function drawPhase1NPCs() {
         ctx.shadowColor = '#f39c12';
         ctx.shadowBlur = 15;
         
-        // Corpo da coruja
         ctx.fillStyle = '#f39c12';
         ctx.beginPath();
         ctx.arc(npc.x + 25, npc.y + 25, 20 + pulse, 0, Math.PI * 2);
         ctx.fill();
         
-        // Olhos
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.arc(npc.x + 18, npc.y + 20, 7, 0, Math.PI * 2);
@@ -88,7 +86,6 @@ function drawPhase1NPCs() {
         ctx.arc(npc.x + 32, npc.y + 20, 3, 0, Math.PI * 2);
         ctx.fill();
         
-        // Bico
         ctx.fillStyle = '#e67e22';
         ctx.beginPath();
         ctx.moveTo(npc.x + 25, npc.y + 26);
@@ -96,7 +93,6 @@ function drawPhase1NPCs() {
         ctx.lineTo(npc.x + 30, npc.y + 32);
         ctx.fill();
         
-        // Efeito holográfico
         ctx.strokeStyle = 'rgba(243, 156, 18, 0.3)';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -121,7 +117,6 @@ function drawPhase1Puzzles() {
         
         ctx.shadowBlur = 20 + pulse;
         
-        // Forma de diamante
         ctx.beginPath();
         ctx.moveTo(puzzle.x + 25, puzzle.y);
         ctx.lineTo(puzzle.x + 50, puzzle.y + 25);
@@ -130,7 +125,6 @@ function drawPhase1Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Brilho interno
         ctx.fillStyle = puzzle.completed ? '#00ff41' : '#c39bd3';
         ctx.beginPath();
         ctx.moveTo(puzzle.x + 25, puzzle.y + 10);
@@ -140,7 +134,6 @@ function drawPhase1Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#000';
         ctx.font = 'bold 20px Orbitron';
@@ -148,7 +141,6 @@ function drawPhase1Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '?', puzzle.x + 25, puzzle.y + 25);
         
-        // Partículas orbitando
         if (!puzzle.completed) {
             for (let i = 0; i < 3; i++) {
                 const angle = (Date.now() / 1000 + i * 2) % (Math.PI * 2);
@@ -169,18 +161,15 @@ function drawPhase1Boss() {
     ctx.shadowColor = '#ff0000';
     ctx.shadowBlur = 30;
     
-    // Corpo do boss
     ctx.fillStyle = '#e74c3c';
     ctx.fillRect(phase1Data.boss.x + shake, phase1Data.boss.y, phase1Data.boss.width, phase1Data.boss.height);
     
-    // Dados corrompidos
     ctx.fillStyle = '#c0392b';
     for (let i = 0; i < 5; i++) {
         const offset = Math.sin(Date.now() / 200 + i) * 3;
         ctx.fillRect(phase1Data.boss.x + 10 + i * 8 + offset, phase1Data.boss.y + 10, 6, 40);
     }
     
-    // Rosto maligno
     ctx.fillStyle = '#000';
     ctx.fillRect(phase1Data.boss.x + 15, phase1Data.boss.y + 18, 10, 10);
     ctx.fillRect(phase1Data.boss.x + 35, phase1Data.boss.y + 18, 10, 10);
@@ -189,14 +178,12 @@ function drawPhase1Boss() {
     ctx.fillRect(phase1Data.boss.x + 18, phase1Data.boss.y + 21, 4, 4);
     ctx.fillRect(phase1Data.boss.x + 38, phase1Data.boss.y + 21, 4, 4);
     
-    // Sorriso maligno
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(phase1Data.boss.x + 30, phase1Data.boss.y + 35, 12, 0, Math.PI);
     ctx.stroke();
     
-    // Barra de HP
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
     ctx.fillRect(phase1Data.boss.x - 5, phase1Data.boss.y - 15, phase1Data.boss.width + 10, 8);
@@ -213,7 +200,6 @@ function drawPhase1Boss() {
 function checkPhase1Interactions() {
     if (gameState.paused) return;
     
-    // NPCs
     phase1Data.npcs.forEach(npc => {
         if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
             audioManager.playInteract();
@@ -224,7 +210,6 @@ function checkPhase1Interactions() {
         }
     });
 
-    // Puzzles
     phase1Data.puzzles.forEach((puzzle, index) => {
         if (isNear(player, puzzle) && !puzzle.completed) {
             audioManager.playInteract();
@@ -232,7 +217,6 @@ function checkPhase1Interactions() {
         }
     });
 
-    // Boss
     if (phase1Data.boss.active && !phase1Data.boss.defeated && isNear(player, phase1Data.boss)) {
         phase1Data.boss.hp--;
         audioManager.playBossHit();

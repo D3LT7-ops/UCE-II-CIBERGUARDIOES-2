@@ -61,7 +61,6 @@ const phase2Data = {
         active: false, defeated: false, hp: 3, maxHp: 3
     },
     
-    // Paredes do labirinto
     walls: [
         {x: 0, y: 200, width: 300, height: 20},
         {x: 400, y: 200, width: 300, height: 20},
@@ -77,7 +76,6 @@ function drawPhase2NPCs() {
         ctx.shadowColor = '#3498db';
         ctx.shadowBlur = 15;
         
-        // Escudo do firewall
         ctx.fillStyle = '#3498db';
         ctx.beginPath();
         ctx.moveTo(npc.x + 25, npc.y);
@@ -89,14 +87,12 @@ function drawPhase2NPCs() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo de proteção
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 24px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('🛡️', npc.x + 25, npc.y + 25);
         
-        // Efeito de energia
         ctx.strokeStyle = 'rgba(52, 152, 219, 0.5)';
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -121,7 +117,6 @@ function drawPhase2Puzzles() {
         
         ctx.shadowBlur = 20 + pulse;
         
-        // Forma de hexágono
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const angle = (Math.PI / 3) * i;
@@ -133,7 +128,6 @@ function drawPhase2Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 20px Orbitron';
@@ -141,7 +135,6 @@ function drawPhase2Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '🔗', puzzle.x + 25, puzzle.y + 25);
         
-        // Partículas de alerta
         if (!puzzle.completed) {
             for (let i = 0; i < 4; i++) {
                 const angle = (Date.now() / 800 + i * Math.PI / 2) % (Math.PI * 2);
@@ -174,7 +167,6 @@ function checkPhase2Collisions() {
             player.y < wall.y + wall.height &&
             player.y + player.height > wall.y) {
             
-            // Corrigir posição do jogador
             const overlapLeft = (player.x + player.width) - wall.x;
             const overlapRight = (wall.x + wall.width) - player.x;
             const overlapTop = (player.y + player.height) - wall.y;
@@ -198,30 +190,25 @@ function drawPhase2Boss() {
     ctx.shadowColor = '#e67e22';
     ctx.shadowBlur = 30;
     
-    // Corpo do phisher
     ctx.fillStyle = '#e67e22';
     ctx.fillRect(phase2Data.boss.x + shake, phase2Data.boss.y, phase2Data.boss.width, phase2Data.boss.height);
     
-    // Links falsos flutuando
     ctx.fillStyle = '#d35400';
     for (let i = 0; i < 4; i++) {
         const offset = Math.sin(Date.now() / 200 + i) * 5;
         ctx.fillRect(phase2Data.boss.x + 5 + i * 13, phase2Data.boss.y + 10 + offset, 10, 3);
     }
     
-    // Rosto enganador
     ctx.fillStyle = '#000';
     ctx.fillRect(phase2Data.boss.x + 15, phase2Data.boss.y + 25, 12, 12);
     ctx.fillRect(phase2Data.boss.x + 33, phase2Data.boss.y + 25, 12, 12);
     
-    // Sorriso malicioso
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(phase2Data.boss.x + 30, phase2Data.boss.y + 45, 10, 0.2 * Math.PI, 0.8 * Math.PI);
     ctx.stroke();
     
-    // Barra de HP
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
     ctx.fillRect(phase2Data.boss.x - 5, phase2Data.boss.y - 15, phase2Data.boss.width + 10, 8);
@@ -238,7 +225,6 @@ function drawPhase2Boss() {
 function checkPhase2Interactions() {
     if (gameState.paused) return;
     
-    // NPCs
     phase2Data.npcs.forEach(npc => {
         if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
             audioManager.playInteract();
@@ -249,7 +235,6 @@ function checkPhase2Interactions() {
         }
     });
 
-    // Puzzles
     phase2Data.puzzles.forEach((puzzle, index) => {
         if (isNear(player, puzzle) && !puzzle.completed) {
             audioManager.playInteract();
@@ -257,7 +242,6 @@ function checkPhase2Interactions() {
         }
     });
 
-    // Boss
     if (phase2Data.boss.active && !phase2Data.boss.defeated && isNear(player, phase2Data.boss)) {
         phase2Data.boss.hp--;
         audioManager.playBossHit();

@@ -4,25 +4,20 @@ let checkInteractionsCooldown = 0;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-    // Redirecionar se não houver nome
     if (!gameState.playerName || gameState.playerName === 'Guardião') {
         window.location.href = 'index.html';
         return;
     }
     
-    // Iniciar música de fundo
     audioManager.startBackgroundMusic();
     
-    // Mostrar diálogo inicial
     setTimeout(() => {
         showDialogue('Bem-vindo, ' + gameState.playerName + '! Pressione ESPAÇO para interagir com NPCs e objetos.');
     }, 1000);
     
-    // Iniciar game loop
     gameLoop();
 });
 
-// Mostrar Puzzle
 function showPuzzle(puzzle, index, phase) {
     const overlay = document.getElementById('puzzleOverlay');
     const content = document.getElementById('puzzleContent');
@@ -39,7 +34,6 @@ function showPuzzle(puzzle, index, phase) {
     gameState.paused = true;
 }
 
-// Verificar Resposta do Puzzle
 window.checkPuzzleAnswer = function(phase, puzzleIndex, optionIndex) {
     let phaseData;
     if (phase === 1) phaseData = phase1Data;
@@ -83,7 +77,6 @@ window.checkPuzzleAnswer = function(phase, puzzleIndex, optionIndex) {
     }, 1500);
 };
 
-// Completar Fase
 function completePhase(phaseNum) {
     if (phaseNum === 1) gameState.phase1Complete = true;
     else if (phaseNum === 2) gameState.phase2Complete = true;
@@ -103,19 +96,16 @@ function completePhase(phaseNum) {
             loadPhase(phaseNum + 1);
         };
     } else {
-        // Jogo completo!
         completeTodoJogo();
     }
 }
 
-// Completar todo o jogo
 async function completeTodoJogo() {
     document.getElementById('finalPlayerName').textContent = gameState.playerName;
     document.getElementById('finalScore').textContent = gameState.score;
     document.getElementById('finalVictoryScreen').classList.add('show');
     gameState.paused = true;
     
-    // Salvar automaticamente no ranking
     await salvarNoRanking();
 }
 
@@ -136,16 +126,13 @@ async function salvarNoRanking() {
     }
 }
 
-// Carregar Fase
 function loadPhase(phaseNum) {
     gameState.currentPhase = phaseNum;
     document.getElementById('currentPhase').textContent = phaseNum;
     
-    // Resetar jogador
     player.x = 100;
     player.y = 350;
     
-    // Esconder telas
     document.getElementById('phaseVictoryScreen').classList.remove('show');
     gameState.paused = false;
     
@@ -163,13 +150,11 @@ function loadPhase(phaseNum) {
     showDialogue(`Fase ${phaseNum} iniciada! Boa sorte, ${gameState.playerName}!`);
 }
 
-// Game Loop Principal
 function gameLoop() {
     if (!gameState.paused) {
         updatePlayer();
         updateParticles();
         
-        // Cooldown para interações
         if (checkInteractionsCooldown > 0) {
             checkInteractionsCooldown--;
         }
@@ -178,11 +163,10 @@ function gameLoop() {
             if (gameState.currentPhase === 1) checkPhase1Interactions();
             else if (gameState.currentPhase === 2) checkPhase2Interactions();
             else if (gameState.currentPhase === 3) checkPhase3Interactions();
-            checkInteractionsCooldown = 30; // ~0.5 segundos
+            checkInteractionsCooldown = 30;
         }
     }
     
-    // Desenhar tudo
     drawBackground(currentPhaseData.title);
     
     if (gameState.currentPhase === 2) {
@@ -211,7 +195,6 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 
-// Prevenir saída acidental
 window.addEventListener('beforeunload', (e) => {
     if (!gameState.phase3Complete) {
         e.preventDefault();
