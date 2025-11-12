@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Como Jogar - Ciber Guardiões</title>
+    <link rel="stylesheet" href="css/tutorial.css">
+</head>
+<body>
+    <canvas id="matrixBg"></canvas>
+    
+    <div class="tutorial-container">
+        <div class="tutorial-box" id="step1">
+            <h1>🎮 COMO JOGAR</h1>
+            <div class="character-preview" id="characterPreview"></div>
+            <p class="big-text">Olá, <span id="playerNameDisplay"></span>! 👋</p>
+            <p class="instruction">
+                Você foi escolhido para proteger o Ciber Reino!<br>
+                Vamos aprender a jogar juntos? 😊
+            </p>
+            <button class="next-btn" onclick="nextStep()">VAMOS LÁ! ▸</button>
+        </div>
+
+        <div class="tutorial-box hidden" id="step2">
+            <h2>🎯 MOVIMENTAÇÃO</h2>
+            <div class="controls-demo">
+                <div class="key-group">
+                    <div class="key">W</div>
+                    <div class="key">A</div>
+                    <div class="key">S</div>
+                    <div class="key">D</div>
+                </div>
+                <div class="or-text">OU</div>
+                <div class="key-group">
+                    <div class="key">↑</div>
+                    <div class="key">←</div>
+                    <div class="key">↓</div>
+                    <div class="key">→</div>
+                </div>
+            </div>
+            <p class="instruction">
+                Use as teclas <strong>WASD</strong> ou as <strong>SETAS</strong><br>
+                para mover seu personagem pelo mapa! 🏃
+            </p>
+            <button class="next-btn" onclick="nextStep()">ENTENDI! ▸</button>
+        </div>
+
+        <div class="tutorial-box hidden" id="step3">
+            <h2>💬 INTERAGIR</h2>
+            <div class="controls-demo">
+                <div class="key big-key">ESPAÇO</div>
+            </div>
+            <p class="instruction">
+                Pressione <strong>ESPAÇO</strong> para:<br>
+                • Conversar com amigos 🦉<br>
+                • Resolver desafios 🧩<br>
+                • Derrotar vilões 👾
+            </p>
+            <div class="tip-box">
+                💡 <strong>DICA:</strong> Procure por cristais brilhantes no mapa!
+            </div>
+            <button class="next-btn" onclick="nextStep()">SHOW! ▸</button>
+        </div>
+
+        <div class="tutorial-box hidden" id="step4">
+            <h2>⏸️ PAUSAR</h2>
+            <div class="controls-demo">
+                <div class="key big-key">ESC</div>
+            </div>
+            <p class="instruction">
+                Precisa de uma pausa?<br>
+                Pressione <strong>ESC</strong> a qualquer momento! ⏸️
+            </p>
+            <button class="next-btn" onclick="nextStep()">BELEZA! ▸</button>
+        </div>
+
+        <div class="tutorial-box hidden" id="step5">
+            <h2>🎯 MISSÃO</h2>
+            <div class="mission-steps">
+                <div class="mission-step">
+                    <span class="step-number">1</span>
+                    <p>Encontre a <strong>Coruja Cyber</strong> 🦉<br>(ela vai te ajudar!)</p>
+                </div>
+                <div class="mission-step">
+                    <span class="step-number">2</span>
+                    <p>Resolva <strong>3 desafios</strong> 🧩<br>(cristais roxos no mapa)</p>
+                </div>
+                <div class="mission-step">
+                    <span class="step-number">3</span>
+                    <p>Derrote o <strong>vilão</strong> 👾<br>(aparecer depois dos desafios)</p>
+                </div>
+            </div>
+            <div class="tip-box">
+                🌟 <strong>LEMBRE-SE:</strong> Não tenha pressa! Explore com calma.
+            </div>
+            <button class="next-btn" onclick="nextStep()">ESTOU PRONTO! ▸</button>
+        </div>
+
+        <div class="tutorial-box hidden" id="step6">
+            <h2>✨ ÚLTIMA DICA!</h2>
+            <div class="final-tips">
+                <div class="tip-card">
+                    <span class="tip-icon">📖</span>
+                    <p><strong>Leia com atenção</strong><br>As mensagens têm dicas importantes!</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">🤔</span>
+                    <p><strong>Pense antes de responder</strong><br>Você pode tentar de novo se errar!</p>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">🎉</span>
+                    <p><strong>Divirta-se!</strong><br>Este jogo é para você aprender brincando!</p>
+                </div>
+            </div>
+            <button class="start-btn" onclick="startGame()">COMEÇAR AVENTURA! 🚀</button>
+            <button class="skip-btn" onclick="startGame()">Pular Tutorial</button>
+        </div>
+
+        <div class="progress-dots">
+            <span class="dot active" data-step="1"></span>
+            <span class="dot" data-step="2"></span>
+            <span class="dot" data-step="3"></span>
+            <span class="dot" data-step="4"></span>
+            <span class="dot" data-step="5"></span>
+            <span class="dot" data-step="6"></span>
+        </div>
+    </div>
+
+    <script src="js/matrix-bg.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+
+        // Mostrar personagem escolhido
+        const playerName = localStorage.getItem('playerName');
+        const selectedCharacter = localStorage.getItem('selectedCharacter') || 'link';
+        
+        document.getElementById('playerNameDisplay').textContent = playerName;
+        
+        // Criar preview do personagem
+        const preview = document.getElementById('characterPreview');
+        preview.className = `character-mini ${selectedCharacter}-mini`;
+
+        function nextStep() {
+            // Ocultar step atual
+            document.getElementById(`step${currentStep}`).classList.add('hidden');
+            
+            // Atualizar dots
+            document.querySelector(`.dot[data-step="${currentStep}"]`).classList.remove('active');
+            
+            // Próximo step
+            currentStep++;
+            
+            // Mostrar próximo step
+            document.getElementById(`step${currentStep}`).classList.remove('hidden');
+            document.querySelector(`.dot[data-step="${currentStep}"]`).classList.add('active');
+            
+            // Som de avanço
+            playSound(400 + currentStep * 50, 0.1);
+        }
+
+        function startGame() {
+            // Marcar tutorial como completo
+            localStorage.setItem('tutorialCompleted', 'true');
+            
+            // Som de início
+            playSound(523.25, 0.2);
+            playSound(659.25, 0.2, 0.1);
+            playSound(783.99, 0.3, 0.2);
+            
+            // Redirecionar para o jogo
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 500);
+        }
+
+        function playSound(frequency, duration, delay = 0) {
+            try {
+                setTimeout(() => {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                }, delay * 1000);
+            } catch (e) {
+                console.log('Áudio não disponível');
+            }
+        }
+
+        // Verificar se tem dados salvos
+        if (!playerName || !selectedCharacter) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

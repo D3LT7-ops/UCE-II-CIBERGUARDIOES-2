@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escolha seu Guardião - Ciber Guardiões</title>
+    <link rel="stylesheet" href="css/character-select.css">
+</head>
+<body>
+    <canvas id="matrixBg"></canvas>
+    
+    <div class="container">
+        <div class="select-container">
+            <h1 class="game-title">⚡ ESCOLHA SEU GUARDIÃO ⚡</h1>
+            <p class="subtitle">Quem vai proteger o Ciber Reino?</p>
+
+            <div class="characters-grid">
+                <!-- Personagem Link (Masculino) -->
+                <div class="character-card" data-character="link" onclick="selectCharacter('link')">
+                    <div class="character-avatar link-avatar">
+                        <div class="avatar-body"></div>
+                        <div class="avatar-head"></div>
+                        <div class="avatar-hair"></div>
+                        <div class="avatar-eyes"></div>
+                        <div class="avatar-sword"></div>
+                        <div class="avatar-shield"></div>
+                    </div>
+                    <h2 class="character-name">ALEX</h2>
+                    <p class="character-description">
+                        Corajoso e estratégico<br>
+                        Especialista em senhas fortes
+                    </p>
+                    <div class="character-stats">
+                        <div class="stat">⚔️ Ataque: ⭐⭐⭐⭐</div>
+                        <div class="stat">🛡️ Defesa: ⭐⭐⭐⭐</div>
+                        <div class="stat">🧠 Inteligência: ⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <button class="select-btn">ESCOLHER ALEX</button>
+                </div>
+
+                <!-- Personagem Zelda (Feminino) -->
+                <div class="character-card" data-character="zelda" onclick="selectCharacter('zelda')">
+                    <div class="character-avatar zelda-avatar">
+                        <div class="avatar-body"></div>
+                        <div class="avatar-head"></div>
+                        <div class="avatar-hair-long"></div>
+                        <div class="avatar-eyes"></div>
+                        <div class="avatar-crown"></div>
+                        <div class="avatar-magic"></div>
+                    </div>
+                    <h2 class="character-name">LUNA</h2>
+                    <p class="character-description">
+                        Sábia e determinada<br>
+                        Mestra em proteção de dados
+                    </p>
+                    <div class="character-stats">
+                        <div class="stat">⚔️ Ataque: ⭐⭐⭐⭐</div>
+                        <div class="stat">🛡️ Defesa: ⭐⭐⭐⭐⭐</div>
+                        <div class="stat">🧠 Inteligência: ⭐⭐⭐⭐⭐</div>
+                    </div>
+                    <button class="select-btn">ESCOLHER LUNA</button>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="window.location.href='index.html'">
+                ◂ VOLTAR
+            </button>
+        </div>
+    </div>
+
+    <script src="js/matrix-bg.js"></script>
+    <script>
+        function selectCharacter(character) {
+            // Salvar personagem escolhido
+            localStorage.setItem('selectedCharacter', character);
+            
+            // Efeito visual de seleção
+            const cards = document.querySelectorAll('.character-card');
+            cards.forEach(card => card.classList.remove('selected'));
+            document.querySelector(`[data-character="${character}"]`).classList.add('selected');
+            
+            // Som de seleção (opcional)
+            playSelectSound();
+            
+            // Redirecionar após animação
+            setTimeout(() => {
+                window.location.href = 'tutorial.html';
+            }, 800);
+        }
+
+        function playSelectSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 523.25; // C5
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Áudio não disponível');
+            }
+        }
+
+        // Verificar se tem nome salvo
+        if (!localStorage.getItem('playerName')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

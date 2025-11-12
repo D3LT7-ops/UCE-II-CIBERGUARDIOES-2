@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Salvar nome no localStorage
         localStorage.setItem('playerName', playerName);
         
-        // Redirecionar para o jogo
-        window.location.href = 'game.html';
+        // Redirecionar para seleção de personagem
+        window.location.href = 'character-select.html';
     });
 
     // Limpar erro ao digitar
