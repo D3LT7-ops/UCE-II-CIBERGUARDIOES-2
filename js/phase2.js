@@ -1,4 +1,4 @@
-// FASE 2: LABIRINTO DOS LINKS - VERSÃO SIMPLIFICADA PARA CRIANÇAS
+// FASE 2: LABIRINTO DOS LINKS - COM LABIRINTO DE VERDADE!
 
 const phase2Data = {
     title: '◢ LABIRINTO DOS LINKS ◣',
@@ -7,15 +7,15 @@ const phase2Data = {
     
     npcs: [
         {
-            x: 500, y: 300, width: 50, height: 50,
+            x: 150, y: 150, width: 50, height: 50,
             type: 'firewall',
             name: 'Firewall Guardian',
             hasDialogue: true,
             dialogue: [
                 '🛡️ Oi, ' + gameState.playerName + '! Sou o Guardião do Firewall!',
-                'Aqui temos links FALSOS e VERDADEIROS. Vamos aprender a diferença? 🔗',
-                'Links falsos roubam suas informações! Mas não se preocupe, vou te ensinar! 😊',
-                'Cuidado com as paredes do labirinto! Você não consegue passar por elas. 🧱'
+                'Este é um LABIRINTO de verdade! Você precisa encontrar o caminho! 🧩',
+                'Os cristais estão escondidos nas curvas do labirinto! 🔍',
+                'Links falsos roubam suas informações! Vamos aprender a identificá-los? 🔗'
             ],
             talked: false
         }
@@ -23,7 +23,7 @@ const phase2Data = {
     
     puzzles: [
         {
-            x: 150, y: 500, width: 50, height: 50,
+            x: 750, y: 150, width: 50, height: 50,
             completed: false,
             question: '🔗 Qual desses links parece SEGURO?',
             options: [
@@ -34,7 +34,7 @@ const phase2Data = {
             ]
         },
         {
-            x: 850, y: 500, width: 50, height: 50,
+            x: 450, y: 550, width: 50, height: 50,
             completed: false,
             question: '📧 Você recebe um email estranho. O que fazer?',
             options: [
@@ -45,7 +45,7 @@ const phase2Data = {
             ]
         },
         {
-            x: 500, y: 100, width: 50, height: 50,
+            x: 850, y: 550, width: 50, height: 50,
             completed: false,
             question: '⚠️ O que indica que um email é FALSO?',
             options: [
@@ -58,15 +58,58 @@ const phase2Data = {
     ],
     
     boss: {
-        x: 900, y: 150, width: 60, height: 60,
+        x: 900, y: 600, width: 60, height: 60,
         active: false, defeated: false, hp: 3, maxHp: 3
     },
     
-    walls: [
-        {x: 0, y: 200, width: 300, height: 20},
-        {x: 400, y: 200, width: 300, height: 20},
-        {x: 200, y: 400, width: 20, height: 200},
-        {x: 700, y: 400, width: 20, height: 200}
+    // LABIRINTO COMPLETO - Paredes formam um labirinto de verdade!
+    maze: [
+        // Bordas externas
+        {x: 0, y: 0, width: 1000, height: 20}, // topo
+        {x: 0, y: 680, width: 1000, height: 20}, // baixo
+        {x: 0, y: 0, width: 20, height: 700}, // esquerda
+        {x: 980, y: 0, width: 20, height: 700}, // direita
+        
+        // Paredes horizontais do labirinto
+        {x: 100, y: 100, width: 200, height: 20},
+        {x: 400, y: 100, width: 300, height: 20},
+        {x: 100, y: 200, width: 150, height: 20},
+        {x: 350, y: 200, width: 250, height: 20},
+        {x: 700, y: 200, width: 200, height: 20},
+        {x: 200, y: 300, width: 200, height: 20},
+        {x: 500, y: 300, width: 200, height: 20},
+        {x: 100, y: 400, width: 250, height: 20},
+        {x: 450, y: 400, width: 200, height: 20},
+        {x: 750, y: 400, width: 150, height: 20},
+        {x: 200, y: 500, width: 150, height: 20},
+        {x: 400, y: 500, width: 200, height: 20},
+        {x: 700, y: 500, width: 200, height: 20},
+        {x: 100, y: 600, width: 250, height: 20},
+        {x: 450, y: 600, width: 300, height: 20},
+        
+        // Paredes verticais do labirinto
+        {x: 100, y: 100, width: 20, height: 120},
+        {x: 300, y: 100, width: 20, height: 220},
+        {x: 400, y: 20, width: 20, height: 100},
+        {x: 500, y: 120, width: 20, height: 100},
+        {x: 600, y: 20, width: 20, height: 200},
+        {x: 700, y: 100, width: 20, height: 120},
+        {x: 800, y: 120, width: 20, height: 100},
+        {x: 900, y: 20, width: 20, height: 200},
+        {x: 200, y: 220, width: 20, height: 100},
+        {x: 400, y: 220, width: 20, height: 100},
+        {x: 500, y: 320, width: 20, height: 100},
+        {x: 700, y: 220, width: 20, height: 200},
+        {x: 800, y: 300, width: 20, height: 120},
+        {x: 200, y: 400, width: 20, height: 120},
+        {x: 350, y: 420, width: 20, height: 100},
+        {x: 450, y: 420, width: 20, height: 100},
+        {x: 600, y: 420, width: 20, height: 100},
+        {x: 750, y: 420, width: 20, height: 100},
+        {x: 100, y: 520, width: 20, height: 100},
+        {x: 350, y: 500, width: 20, height: 120},
+        {x: 600, y: 520, width: 20, height: 100},
+        {x: 900, y: 500, width: 20, height: 120}
     ]
 };
 
@@ -77,7 +120,6 @@ function drawPhase2NPCs() {
         ctx.shadowColor = '#3498db';
         ctx.shadowBlur = 15;
         
-        // Escudo do firewall
         ctx.fillStyle = '#3498db';
         ctx.beginPath();
         ctx.moveTo(npc.x + 25, npc.y);
@@ -89,21 +131,18 @@ function drawPhase2NPCs() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo de proteção
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 28px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText('🛡️', npc.x + 25, npc.y + 25);
         
-        // Efeito de energia
         ctx.strokeStyle = 'rgba(52, 152, 219, 0.5)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(npc.x + 25, npc.y + 25, 30 + pulse, 0, Math.PI * 2);
         ctx.stroke();
         
-        // Emoji acima
         ctx.shadowBlur = 0;
         ctx.font = 'bold 16px Arial';
         ctx.fillStyle = '#fff';
@@ -127,7 +166,6 @@ function drawPhase2Puzzles() {
         
         ctx.shadowBlur = 20 + pulse;
         
-        // Hexágono
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const angle = (Math.PI / 3) * i;
@@ -139,7 +177,6 @@ function drawPhase2Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 24px Arial';
@@ -147,7 +184,6 @@ function drawPhase2Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '🔗', puzzle.x + 25, puzzle.y + 25);
         
-        // Partículas de alerta
         if (!puzzle.completed) {
             for (let i = 0; i < 4; i++) {
                 const angle = (Date.now() / 800 + i * Math.PI / 2) % (Math.PI * 2);
@@ -160,7 +196,6 @@ function drawPhase2Puzzles() {
             }
         }
         
-        // Indicador
         if (!puzzle.completed && isNear(player, puzzle, 100)) {
             ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
             ctx.font = 'bold 14px Rajdhani';
@@ -169,29 +204,47 @@ function drawPhase2Puzzles() {
     });
 }
 
-function drawPhase2Walls() {
-    ctx.fillStyle = '#2c3e50';
-    ctx.strokeStyle = '#34495e';
-    ctx.lineWidth = 2;
-    
-    phase2Data.walls.forEach(wall => {
+// Desenhar o labirinto
+function drawPhase2Maze() {
+    phase2Data.maze.forEach(wall => {
+        // Parede principal
+        ctx.fillStyle = '#2c3e50';
         ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
+        
+        // Borda da parede
+        ctx.strokeStyle = '#1a252f';
+        ctx.lineWidth = 3;
         ctx.strokeRect(wall.x, wall.y, wall.width, wall.height);
         
-        // Padrão de tijolos
-        ctx.strokeStyle = '#1a252f';
+        // Efeito de tijolos
+        ctx.strokeStyle = '#34495e';
         ctx.lineWidth = 1;
-        for (let i = 0; i < wall.width; i += 20) {
-            ctx.beginPath();
-            ctx.moveTo(wall.x + i, wall.y);
-            ctx.lineTo(wall.x + i, wall.y + wall.height);
-            ctx.stroke();
+        
+        // Linhas horizontais (tijolos)
+        if (wall.height > wall.width) {
+            for (let i = 0; i < wall.height; i += 15) {
+                ctx.beginPath();
+                ctx.moveTo(wall.x, wall.y + i);
+                ctx.lineTo(wall.x + wall.width, wall.y + i);
+                ctx.stroke();
+            }
+        } else {
+            for (let i = 0; i < wall.width; i += 20) {
+                ctx.beginPath();
+                ctx.moveTo(wall.x + i, wall.y);
+                ctx.lineTo(wall.x + i, wall.y + wall.height);
+                ctx.stroke();
+            }
         }
+        
+        // Sombra na parede (efeito 3D)
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+        ctx.fillRect(wall.x + 2, wall.y + 2, wall.width, wall.height);
     });
 }
 
 function checkPhase2Collisions() {
-    phase2Data.walls.forEach(wall => {
+    phase2Data.maze.forEach(wall => {
         if (player.x < wall.x + wall.width &&
             player.x + player.width > wall.x &&
             player.y < wall.y + wall.height &&
@@ -220,30 +273,25 @@ function drawPhase2Boss() {
     ctx.shadowColor = '#e67e22';
     ctx.shadowBlur = 30;
     
-    // Corpo do phisher
     ctx.fillStyle = '#e67e22';
     ctx.fillRect(phase2Data.boss.x + shake, phase2Data.boss.y, phase2Data.boss.width, phase2Data.boss.height);
     
-    // Links falsos flutuando
     ctx.fillStyle = '#d35400';
     for (let i = 0; i < 4; i++) {
         const offset = Math.sin(Date.now() / 200 + i) * 5;
         ctx.fillRect(phase2Data.boss.x + 5 + i * 13, phase2Data.boss.y + 10 + offset, 10, 3);
     }
     
-    // Rosto enganador
     ctx.fillStyle = '#000';
     ctx.fillRect(phase2Data.boss.x + 15, phase2Data.boss.y + 25, 12, 12);
     ctx.fillRect(phase2Data.boss.x + 33, phase2Data.boss.y + 25, 12, 12);
     
-    // Sorriso malicioso
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.arc(phase2Data.boss.x + 30, phase2Data.boss.y + 45, 10, 0.2 * Math.PI, 0.8 * Math.PI);
     ctx.stroke();
     
-    // Barra de HP
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(phase2Data.boss.x - 5, phase2Data.boss.y - 20, phase2Data.boss.width + 10, 10);
@@ -256,13 +304,11 @@ function drawPhase2Boss() {
     ctx.lineWidth = 2;
     ctx.strokeRect(phase2Data.boss.x - 5, phase2Data.boss.y - 20, phase2Data.boss.width + 10, 10);
     
-    // Texto HP
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 10px Rajdhani';
     ctx.textAlign = 'center';
     ctx.fillText(`${phase2Data.boss.hp}/${phase2Data.boss.maxHp}`, phase2Data.boss.x + 30, phase2Data.boss.y - 12);
     
-    // Indicador
     if (isNear(player, phase2Data.boss, 150)) {
         ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
         ctx.font = 'bold 16px Rajdhani';
@@ -273,7 +319,6 @@ function drawPhase2Boss() {
 function checkPhase2Interactions() {
     if (gameState.paused) return;
     
-    // NPCs
     phase2Data.npcs.forEach(npc => {
         if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
             audioManager.playInteract();
@@ -284,7 +329,6 @@ function checkPhase2Interactions() {
         }
     });
 
-    // Puzzles
     phase2Data.puzzles.forEach((puzzle, index) => {
         if (isNear(player, puzzle) && !puzzle.completed) {
             audioManager.playInteract();
@@ -292,7 +336,6 @@ function checkPhase2Interactions() {
         }
     });
 
-    // Boss
     if (phase2Data.boss.active && !phase2Data.boss.defeated && isNear(player, phase2Data.boss)) {
         phase2Data.boss.hp--;
         audioManager.playBossHit();
@@ -314,5 +357,5 @@ function checkPhase2Interactions() {
 
 function activatePhase2Boss() {
     phase2Data.boss.active = true;
-    showDialogue('⚠️ ALERTA! O hacker "Link Malicioso" está criando links falsos! Chegue perto 3 vezes para derrotá-lo! 💪');
+    showDialogue('⚠️ ALERTA! O hacker "Link Malicioso" está no fim do labirinto! Encontre-o e derrote-o! 💪');
 }

@@ -1,4 +1,4 @@
-// Carregar e exibir o ranking
+// Sistema de Ranking - USANDO LOCALSTORAGE (funciona offline)
 document.addEventListener('DOMContentLoaded', async () => {
     await loadLeaderboard();
 });
@@ -7,21 +7,20 @@ async function loadLeaderboard() {
     const list = document.getElementById('leaderboardList');
     
     try {
-        // Buscar todas as chaves de jogadores
-        const result = await window.storage.list('player:', true);
+        // Buscar ranking do localStorage
+        const rankingData = localStorage.getItem('ciber_guardioes_ranking');
         
-        if (!result || !result.keys || result.keys.length === 0) {
+        if (!rankingData) {
             list.innerHTML = '<div class="empty-ranking">Nenhum guardião registrado ainda.<br>Seja o primeiro a completar uma missão!</div>';
             return;
         }
         
-        // Buscar todos os dados dos jogadores
-        const scores = [];
-        for (const key of result.keys) {
-            const data = await window.storage.get(key, true);
-            if (data && data.value) {
-                scores.push(JSON.parse(data.value));
-            }
+        // Parse do JSON
+        const scores = JSON.parse(rankingData);
+        
+        if (!scores || scores.length === 0) {
+            list.innerHTML = '<div class="empty-ranking">Nenhum guardião registrado ainda.<br>Seja o primeiro a completar uma missão!</div>';
+            return;
         }
         
         // Ordenar por pontuação (maior para menor)
@@ -49,11 +48,16 @@ function displayLeaderboard(scores) {
         const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
         const topClass = rank <= 3 ? 'top3' : '';
         
+        // Formatar data
+        const date = new Date(entry.timestamp);
+        const dateStr = date.toLocaleDateString('pt-BR');
+        
         return `
             <div class="leaderboard-entry ${topClass}">
                 <span class="rank">${medal}</span>
                 <span class="name">${escapeHtml(entry.name)}</span>
                 <span class="score">${entry.score} pts</span>
+                <span class="date">${dateStr}</span>
             </div>
         `;
     }).join('');

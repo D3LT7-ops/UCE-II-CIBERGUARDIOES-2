@@ -1,4 +1,4 @@
-// Controle Principal do Jogo
+// Controle Principal do Jogo - COM RANKING FUNCIONANDO
 let currentPhaseData = phase1Data;
 let checkInteractionsCooldown = 0;
 
@@ -70,7 +70,7 @@ window.checkPuzzleAnswer = function(phase, puzzleIndex, optionIndex) {
                 }, 2000);
             }
         } else {
-            showDialogue(option.feedback + ' Tente novamente!');
+            showDialogue(option.feedback);
         }
         document.getElementById('puzzleOverlay').classList.remove('show');
         gameState.paused = false;
@@ -106,6 +106,7 @@ async function completeTodoJogo() {
     document.getElementById('finalVictoryScreen').classList.add('show');
     gameState.paused = true;
     
+    // Salvar no ranking automaticamente
     await salvarNoRanking();
 }
 
@@ -113,14 +114,48 @@ async function salvarNoRanking() {
     const playerData = {
         name: gameState.playerName,
         score: gameState.score,
+        character: gameState.selectedCharacter === 'link' ? 'Alex' : 'Luna',
         completedPhases: 3,
         timestamp: Date.now()
     };
     
     try {
-        const key = `player:${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        await window.storage.set(key, JSON.stringify(playerData), true);
-        console.log('Pontuação salva com sucesso!');
+        // Buscar ranking existente
+        let ranking = [];
+        const existingRanking = localStorage.getItem('ciber_guardioes_ranking');
+        
+        if (existingRanking) {
+            ranking = JSON.parse(existingRanking);
+        }
+        
+        // Adicionar nova pontuação
+        ranking.push(playerData);
+        
+        // Ordenar por pontuação (maior para menor)
+        ranking.sort((a, b) => b.score - a.score);
+        
+        // Manter apenas top 100
+        if (ranking.length > 100) {
+            ranking = ranking.slice(0, 100);
+        }
+        
+        // Salvar de volta
+        localStorage.setItem('ciber_guardioes_ranking', JSON.stringify(ranking));
+        
+        console.log('✅ Pontuação salva no ranking!');
+        
+        // Mostrar mensagem de sucesso
+        setTimeout(() => {
+            const position = ranking.findIndex(r => 
+                r.name === playerData.name && 
+                r.timestamp === playerData.timestamp
+            ) + 1;
+            
+            if (position <= 10) {
+                showDialogue(`🏆 INCRÍVEL! Você está em ${position}º lugar no ranking!`);
+            }
+        }, 2000);
+        
     } catch (error) {
         console.error('Erro ao salvar pontuação:', error);
     }
@@ -170,7 +205,7 @@ function gameLoop() {
     drawBackground(currentPhaseData.title);
     
     if (gameState.currentPhase === 2) {
-        drawPhase2Walls();
+        drawPhase2Maze(); // Desenhar labirinto
         if (!gameState.paused) checkPhase2Collisions();
     }
     
