@@ -1,151 +1,4 @@
-/* ═══════════════════════════════════════════════════════════════════
-   ARQUIVO 10: js/audio-manager.js
-   ═══════════════════════════════════════════════════════════════════ */
-
-// Sistema de Áudio do Jogo
-class AudioManager {
-    constructor() {
-        this.audioContext = null;
-        this.sounds = {};
-        this.music = null;
-        this.volume = 0.5;
-        this.muted = false;
-        
-        this.initAudio();
-        this.setupControls();
-    }
-
-    initAudio() {
-        try {
-            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            console.warn('Web Audio API não suportada');
-        }
-    }
-
-    setupControls() {
-        const muteBtn = document.getElementById('muteBtn');
-        const volumeSlider = document.getElementById('volumeSlider');
-
-        muteBtn.addEventListener('click', () => {
-            this.toggleMute();
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            this.setVolume(e.target.value / 100);
-        });
-    }
-
-    // Gerar tons sintetizados
-    playTone(frequency, duration, type = 'sine') {
-        if (!this.audioContext || this.muted) return;
-
-        const oscillator = this.audioContext.createOscillator();
-        const gainNode = this.audioContext.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(this.audioContext.destination);
-
-        oscillator.frequency.value = frequency;
-        oscillator.type = type;
-
-        gainNode.gain.setValueAtTime(this.volume * 0.3, this.audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-
-        oscillator.start(this.audioContext.currentTime);
-        oscillator.stop(this.audioContext.currentTime + duration);
-    }
-
-    // Sons do jogo
-    playWalk() {
-        this.playTone(200, 0.05, 'square');
-    }
-
-    playInteract() {
-        this.playTone(600, 0.1, 'sine');
-    }
-
-    playSuccess() {
-        this.playTone(523.25, 0.1, 'sine');
-        setTimeout(() => this.playTone(659.25, 0.1, 'sine'), 100);
-        setTimeout(() => this.playTone(783.99, 0.2, 'sine'), 200);
-    }
-
-    playError() {
-        this.playTone(200, 0.15, 'sawtooth');
-        setTimeout(() => this.playTone(150, 0.15, 'sawtooth'), 150);
-    }
-
-    playPuzzleComplete() {
-        this.playTone(523.25, 0.1);
-        setTimeout(() => this.playTone(659.25, 0.1), 100);
-        setTimeout(() => this.playTone(783.99, 0.1), 200);
-        setTimeout(() => this.playTone(1046.50, 0.3), 300);
-    }
-
-    playPhaseComplete() {
-        for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                this.playTone(400 + i * 100, 0.15, 'sine');
-            }, i * 100);
-        }
-    }
-
-    playBossHit() {
-        this.playTone(150, 0.2, 'sawtooth');
-    }
-
-    playBossDefeat() {
-        for (let i = 0; i < 8; i++) {
-            setTimeout(() => {
-                this.playTone(800 - i * 100, 0.1, 'square');
-            }, i * 80);
-        }
-    }
-
-    // Música de fundo
-    startBackgroundMusic() {
-        if (this.music) return;
-        
-        const notes = [523.25, 587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33];
-        let currentNote = 0;
-
-        this.music = setInterval(() => {
-            if (!this.muted) {
-                this.playTone(notes[currentNote], 0.3, 'sine');
-            }
-            currentNote = (currentNote + 1) % notes.length;
-        }, 500);
-    }
-
-    stopBackgroundMusic() {
-        if (this.music) {
-            clearInterval(this.music);
-            this.music = null;
-        }
-    }
-
-    setVolume(value) {
-        this.volume = Math.max(0, Math.min(1, value));
-        document.getElementById('volumeSlider').value = this.volume * 100;
-    }
-
-    toggleMute() {
-        this.muted = !this.muted;
-        const muteBtn = document.getElementById('muteBtn');
-        muteBtn.textContent = this.muted ? '🔇' : '🔊';
-    }
-}
-
-// Instância global do gerenciador de áudio
-const audioManager = new AudioManager();
-
-
-/* ═══════════════════════════════════════════════════════════════════
-   ARQUIVO 11: js/game-engine.js
-   ═══════════════════════════════════════════════════════════════════ */
-
-// Motor Principal do Jogo
+// Motor Principal do Jogo - COM PERSONAGENS ALEX E LUNA
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -154,6 +7,7 @@ const gameState = {
     currentPhase: 1,
     score: 0,
     playerName: localStorage.getItem('playerName') || 'Guardião',
+    selectedCharacter: localStorage.getItem('selectedCharacter') || 'link', // alex ou luna
     paused: false,
     phase1Complete: false,
     phase2Complete: false,
@@ -264,52 +118,241 @@ function updatePlayer() {
 function drawPlayer() {
     const glowIntensity = Math.sin(Date.now() / 200) * 5 + 10;
     
-    ctx.shadowColor = '#00ff41';
+    ctx.shadowColor = gameState.selectedCharacter === 'link' ? '#00ff41' : '#9b59b6';
     ctx.shadowBlur = glowIntensity;
     
-    // Corpo
-    ctx.fillStyle = '#00ff41';
-    ctx.fillRect(player.x + 5, player.y + 5, player.width - 10, player.height - 10);
-    
-    // Cabeça
-    ctx.fillStyle = '#0a0a0a';
-    ctx.fillRect(player.x + 10, player.y + 8, player.width - 20, 15);
-    
-    // Olhos com direção
-    ctx.fillStyle = '#00ff41';
-    if (player.direction === 'right') {
-        ctx.fillRect(player.x + 22, player.y + 12, 6, 6);
-    } else if (player.direction === 'left') {
-        ctx.fillRect(player.x + 12, player.y + 12, 6, 6);
+    // Verificar qual personagem desenhar
+    if (gameState.selectedCharacter === 'link') {
+        drawAlex();
     } else {
-        ctx.fillRect(player.x + 14, player.y + 12, 4, 6);
-        ctx.fillRect(player.x + 22, player.y + 12, 4, 6);
-    }
-    
-    // Visor
-    ctx.strokeStyle = '#00ff41';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(player.x + 8, player.y + 16);
-    ctx.lineTo(player.x + 32, player.y + 16);
-    ctx.stroke();
-    
-    // Braços
-    ctx.fillStyle = '#00ff41';
-    ctx.fillRect(player.x + 2, player.y + 24, 4, 10);
-    ctx.fillRect(player.x + 34, player.y + 24, 4, 10);
-    
-    // Pernas com animação
-    const legOffset = player.animFrame % 2 === 0 ? 2 : -2;
-    if (player.moving) {
-        ctx.fillRect(player.x + 12 + legOffset, player.y + 35, 5, 5);
-        ctx.fillRect(player.x + 23 - legOffset, player.y + 35, 5, 5);
-    } else {
-        ctx.fillRect(player.x + 12, player.y + 35, 5, 5);
-        ctx.fillRect(player.x + 23, player.y + 35, 5, 5);
+        drawLuna();
     }
     
     ctx.shadowBlur = 0;
+}
+
+// DESENHAR ALEX (Link - Masculino)
+function drawAlex() {
+    const px = player.x;
+    const py = player.y;
+    const legOffset = player.moving && player.animFrame % 2 === 0 ? 2 : -2;
+    
+    // Corpo (roupa verde)
+    ctx.fillStyle = '#00cc33';
+    ctx.fillRect(px + 8, py + 15, 24, 20);
+    
+    // Cabeça (pele)
+    ctx.fillStyle = '#ffcc99';
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 12, 10, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Cabelo (marrom)
+    ctx.fillStyle = '#8B4513';
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 8, 11, Math.PI, 0, true);
+    ctx.fill();
+    
+    // Pontas do cabelo
+    ctx.fillRect(px + 10, py + 8, 4, 6);
+    ctx.fillRect(px + 26, py + 8, 4, 6);
+    
+    // Olhos (direção)
+    ctx.fillStyle = '#000';
+    if (player.direction === 'right') {
+        ctx.fillRect(px + 24, py + 11, 3, 3);
+    } else if (player.direction === 'left') {
+        ctx.fillRect(px + 13, py + 11, 3, 3);
+    } else {
+        ctx.fillRect(px + 16, py + 11, 3, 3);
+        ctx.fillRect(px + 21, py + 11, 3, 3);
+    }
+    
+    // Boca (sorriso)
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 15, 3, 0, Math.PI);
+    ctx.stroke();
+    
+    // Braços
+    ctx.fillStyle = '#00cc33';
+    ctx.fillRect(px + 3, py + 18, 5, 12);
+    ctx.fillRect(px + 32, py + 18, 5, 12);
+    
+    // Mãos (pele)
+    ctx.fillStyle = '#ffcc99';
+    ctx.fillRect(px + 3, py + 28, 5, 4);
+    ctx.fillRect(px + 32, py + 28, 5, 4);
+    
+    // Espada (no braço direito)
+    if (player.direction === 'right') {
+        ctx.fillStyle = '#silver';
+        ctx.fillRect(px + 34, py + 20, 3, 15);
+        ctx.fillStyle = '#8B4513';
+        ctx.fillRect(px + 33, py + 32, 5, 4);
+    }
+    
+    // Escudo (no braço esquerdo quando olha para esquerda)
+    if (player.direction === 'left') {
+        ctx.fillStyle = '#4169E1';
+        ctx.fillRect(px, py + 20, 6, 10);
+        ctx.strokeStyle = '#FFD700';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(px, py + 20, 6, 10);
+    }
+    
+    // Pernas (calça marrom)
+    ctx.fillStyle = '#654321';
+    if (player.moving) {
+        ctx.fillRect(px + 10 + legOffset, py + 35, 7, 5);
+        ctx.fillRect(px + 23 - legOffset, py + 35, 7, 5);
+    } else {
+        ctx.fillRect(px + 10, py + 35, 7, 5);
+        ctx.fillRect(px + 23, py + 35, 7, 5);
+    }
+    
+    // Botas (marrom escuro)
+    ctx.fillStyle = '#3d2817';
+    ctx.fillRect(px + 10, py + 37, 7, 3);
+    ctx.fillRect(px + 23, py + 37, 7, 3);
+    
+    // Cinto (dourado)
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(px + 8, py + 27, 24, 2);
+    
+    // Fivela do cinto
+    ctx.fillRect(px + 18, py + 26, 4, 4);
+}
+
+// DESENHAR LUNA (Zelda - Feminino)
+function drawLuna() {
+    const px = player.x;
+    const py = player.y;
+    const legOffset = player.moving && player.animFrame % 2 === 0 ? 2 : -2;
+    
+    // Corpo (vestido roxo)
+    ctx.fillStyle = '#9b59b6';
+    ctx.fillRect(px + 8, py + 15, 24, 22);
+    
+    // Saia (mais larga)
+    ctx.fillRect(px + 5, py + 30, 30, 7);
+    
+    // Cabeça (pele)
+    ctx.fillStyle = '#ffcc99';
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 12, 10, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Cabelo longo (loiro)
+    ctx.fillStyle = '#DAA520';
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 8, 11, Math.PI, 0, true);
+    ctx.fill();
+    
+    // Cabelo dos lados (cascata)
+    ctx.fillRect(px + 8, py + 12, 4, 15);
+    ctx.fillRect(px + 28, py + 12, 4, 15);
+    
+    // Coroa (dourada)
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(px + 14, py + 3, 12, 3);
+    // Pontas da coroa
+    ctx.fillRect(px + 15, py + 1, 2, 2);
+    ctx.fillRect(px + 19, py + 0, 2, 3);
+    ctx.fillRect(px + 23, py + 1, 2, 2);
+    
+    // Olhos (azuis - mais expressivos)
+    ctx.fillStyle = '#1E90FF';
+    if (player.direction === 'right') {
+        ctx.fillRect(px + 24, py + 11, 3, 4);
+    } else if (player.direction === 'left') {
+        ctx.fillRect(px + 13, py + 11, 3, 4);
+    } else {
+        ctx.fillRect(px + 16, py + 11, 3, 4);
+        ctx.fillRect(px + 21, py + 11, 3, 4);
+    }
+    
+    // Cílios
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    if (player.direction === 'right') {
+        ctx.beginPath();
+        ctx.moveTo(px + 27, py + 10);
+        ctx.lineTo(px + 28, py + 9);
+        ctx.stroke();
+    } else if (player.direction === 'left') {
+        ctx.beginPath();
+        ctx.moveTo(px + 13, py + 10);
+        ctx.lineTo(px + 12, py + 9);
+        ctx.stroke();
+    } else {
+        ctx.beginPath();
+        ctx.moveTo(px + 16, py + 10);
+        ctx.lineTo(px + 15, py + 9);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(px + 24, py + 10);
+        ctx.lineTo(px + 25, py + 9);
+        ctx.stroke();
+    }
+    
+    // Boca (sorriso)
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 16, 3, 0, Math.PI);
+    ctx.stroke();
+    
+    // Braços
+    ctx.fillStyle = '#9b59b6';
+    ctx.fillRect(px + 3, py + 18, 5, 12);
+    ctx.fillRect(px + 32, py + 18, 5, 12);
+    
+    // Mãos (pele)
+    ctx.fillStyle = '#ffcc99';
+    ctx.fillRect(px + 3, py + 28, 5, 4);
+    ctx.fillRect(px + 32, py + 28, 5, 4);
+    
+    // Magia (brilho na mão direita)
+    if (player.direction === 'right' || player.direction === 'down') {
+        const magicPulse = Math.sin(Date.now() / 300) * 2;
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.7)';
+        ctx.beginPath();
+        ctx.arc(px + 37, py + 30, 4 + magicPulse, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Partículas mágicas
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+        ctx.fillRect(px + 39, py + 26, 2, 2);
+        ctx.fillRect(px + 36, py + 33, 2, 2);
+        ctx.fillRect(px + 40, py + 32, 2, 2);
+    }
+    
+    // Pernas (roxo mais escuro)
+    ctx.fillStyle = '#8e44ad';
+    if (player.moving) {
+        ctx.fillRect(px + 12 + legOffset, py + 37, 6, 3);
+        ctx.fillRect(px + 22 - legOffset, py + 37, 6, 3);
+    } else {
+        ctx.fillRect(px + 12, py + 37, 6, 3);
+        ctx.fillRect(px + 22, py + 37, 6, 3);
+    }
+    
+    // Sapatos (dourados)
+    ctx.fillStyle = '#DAA520';
+    ctx.fillRect(px + 12, py + 38, 6, 2);
+    ctx.fillRect(px + 22, py + 38, 6, 2);
+    
+    // Detalhes do vestido (faixa dourada)
+    ctx.fillStyle = '#FFD700';
+    ctx.fillRect(px + 8, py + 27, 24, 2);
+    
+    // Joia no vestido
+    ctx.fillStyle = '#FF1493';
+    ctx.beginPath();
+    ctx.arc(px + 20, py + 21, 2, 0, Math.PI * 2);
+    ctx.fill();
 }
 
 function updateParticles() {
@@ -424,5 +467,9 @@ document.getElementById('resumeBtn').addEventListener('click', togglePause);
 // Botão de continuar diálogo
 document.getElementById('dialogueButton').addEventListener('click', hideDialogue);
 
-// Exibir nome do jogador
-document.getElementById('playerNameDisplay').textContent = gameSt
+// Exibir nome do jogador e personagem escolhido
+document.getElementById('playerNameDisplay').textContent = gameState.playerName;
+
+// Mostrar qual personagem está jogando
+const characterName = gameState.selectedCharacter === 'link' ? 'Alex' : 'Luna';
+console.log(`🎮 Jogando com: ${characterName}`);
