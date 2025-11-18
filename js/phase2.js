@@ -1,4 +1,4 @@
-// FASE 2: LABIRINTO DOS LINKS - SIMPLES E FUNCIONAL
+// FASE 2: LABIRINTO DOS LINKS - CORRIGIDO E FUNCIONAL
 
 const phase2Data = {
     title: '◢ LABIRINTO DOS LINKS ◣',
@@ -15,7 +15,7 @@ const phase2Data = {
                 '🛡️ Oi, ' + gameState.playerName + '! Sou o Guardião do Firewall!',
                 'Siga pelo caminho e encontre os 3 cristais! 🔍',
                 'No final, você encontrará o vilão! Boa sorte! 💪',
-                'Dica: Siga sempre para a DIREITA e BAIXO! ➡️⬇️'
+                'Dica: Explore todo o labirinto! 🗺️'
             ],
             talked: false
         }
@@ -23,8 +23,8 @@ const phase2Data = {
     
     puzzles: [
         {
-            // Puzzle 1 - Corredor direito
-            x: 650, y: 100, width: 50, height: 50,
+            // Puzzle 1 - Área superior direita
+            x: 700, y: 120, width: 50, height: 50,
             completed: false,
             question: '🔗 Qual desses links parece SEGURO?',
             options: [
@@ -35,8 +35,8 @@ const phase2Data = {
             ]
         },
         {
-            // Puzzle 2 - Meio do caminho
-            x: 400, y: 350, width: 50, height: 50,
+            // Puzzle 2 - Área central
+            x: 450, y: 350, width: 50, height: 50,
             completed: false,
             question: '📧 Você recebe um email estranho. O que fazer?',
             options: [
@@ -47,8 +47,8 @@ const phase2Data = {
             ]
         },
         {
-            // Puzzle 3 - Antes do boss
-            x: 650, y: 550, width: 50, height: 50,
+            // Puzzle 3 - Área inferior direita (antes do boss)
+            x: 800, y: 550, width: 50, height: 50,
             completed: false,
             question: '⚠️ O que indica que um email é FALSO?',
             options: [
@@ -61,36 +61,50 @@ const phase2Data = {
     ],
     
     boss: {
-        // Boss no final - bem separado
-        x: 850, y: 550, width: 60, height: 60,
+        // Boss no canto inferior direito
+        x: 880, y: 580, width: 60, height: 60,
         active: false, defeated: false, hp: 3, maxHp: 3
     },
     
-    // LABIRINTO SIMPLES - Apenas bordas e algumas divisórias
+    // LABIRINTO REDESENHADO - Caminhos claros e navegáveis
     maze: [
-        // Bordas externas
-        {x: 0, y: 0, width: 1000, height: 30}, // topo
-        {x: 0, y: 670, width: 1000, height: 30}, // baixo
-        {x: 0, y: 0, width: 30, height: 700}, // esquerda
-        {x: 970, y: 0, width: 30, height: 700}, // direita
+        // ===== BORDAS EXTERNAS =====
+        {x: 0, y: 0, width: 1000, height: 20},        // Topo
+        {x: 0, y: 680, width: 1000, height: 20},      // Baixo
+        {x: 0, y: 0, width: 20, height: 700},         // Esquerda
+        {x: 980, y: 0, width: 20, height: 700},       // Direita
         
-        // Parede central horizontal (divide topo/baixo)
-        {x: 200, y: 240, width: 600, height: 30},
+        // ===== DIVISÓRIAS HORIZONTAIS =====
+        // Linha superior (y=200)
+        {x: 20, y: 200, width: 350, height: 20},      // Esquerda
+        {x: 480, y: 200, width: 300, height: 20},     // Centro-direita
         
-        // Abertura esquerda na parede central
-        {x: 30, y: 270, width: 170, height: 30},
+        // Linha central (y=400)
+        {x: 250, y: 400, width: 300, height: 20},     // Centro
+        {x: 650, y: 400, width: 150, height: 20},     // Direita
         
-        // Abertura direita na parede central
-        {x: 800, y: 270, width: 170, height: 30},
+        // ===== DIVISÓRIAS VERTICAIS =====
+        // Coluna 1 (x=250)
+        {x: 250, y: 20, width: 20, height: 180},      // Superior
+        {x: 250, y: 420, width: 20, height: 180},     // Inferior
         
-        // Obstáculo central (cria caminho em S)
-        {x: 300, y: 400, width: 400, height: 30},
+        // Coluna 2 (x=480)
+        {x: 480, y: 220, width: 20, height: 180},     // Superior-meio
         
-        // Obstáculos pequenos para criar curvas
-        {x: 200, y: 80, width: 30, height: 120},
-        {x: 500, y: 80, width: 30, height: 120},
-        {x: 200, y: 470, width: 30, height: 150},
-        {x: 750, y: 400, width: 30, height: 120}
+        // Coluna 3 (x=650)
+        {x: 650, y: 20, width: 20, height: 180},      // Superior
+        {x: 650, y: 420, width: 20, height: 120},     // Inferior
+        
+        // ===== OBSTÁCULOS ADICIONAIS (para criar caminhos interessantes) =====
+        {x: 120, y: 80, width: 20, height: 100},      // Obstáculo esquerdo superior
+        {x: 380, y: 280, width: 80, height: 20},      // Obstáculo horizontal meio
+        {x: 550, y: 280, width: 20, height: 100},     // Obstáculo vertical meio
+        {x: 800, y: 220, width: 20, height: 160},     // Obstáculo direito meio
+        {x: 120, y: 500, width: 100, height: 20},     // Obstáculo esquerdo inferior
+        
+        // ===== PAREDES PARA CRIAR O CAMINHO ATÉ O BOSS =====
+        {x: 820, y: 500, width: 20, height: 80},      // Parede antes do boss (esquerda)
+        {x: 750, y: 640, width: 100, height: 20},     // Parede embaixo
     ]
 };
 
@@ -219,33 +233,28 @@ function drawPhase2Maze() {
         ctx.strokeRect(wall.x, wall.y, wall.width, wall.height);
     });
     
-    // Setas guia no chão
-    drawPathArrows();
-}
-
-// Desenhar setas no chão para guiar o jogador
-function drawPathArrows() {
-    const arrows = [
-        {x: 300, y: 150, dir: '→'},
-        {x: 550, y: 150, dir: '→'},
-        {x: 100, y: 350, dir: '↓'},
-        {x: 350, y: 500, dir: '→'},
-        {x: 550, y: 500, dir: '→'},
-        {x: 750, y: 500, dir: '→'}
-    ];
+    // Desenhar grid de ajuda (linha pontilhada sutil)
+    ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([5, 15]);
     
-    ctx.fillStyle = 'rgba(0, 255, 65, 0.3)';
-    ctx.font = 'bold 40px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
+    // Linhas verticais
+    for (let x = 100; x < 1000; x += 100) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, 700);
+        ctx.stroke();
+    }
     
-    arrows.forEach(arrow => {
-        const pulse = Math.sin(Date.now() / 500) * 0.2 + 0.8;
-        ctx.globalAlpha = pulse;
-        ctx.fillText(arrow.dir, arrow.x, arrow.y);
-    });
+    // Linhas horizontais
+    for (let y = 100; y < 700; y += 100) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(1000, y);
+        ctx.stroke();
+    }
     
-    ctx.globalAlpha = 1;
+    ctx.setLineDash([]);
 }
 
 function checkPhase2Collisions() {
