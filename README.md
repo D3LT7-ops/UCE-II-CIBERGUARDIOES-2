@@ -59,6 +59,10 @@ Identifique links maliciosos e aprenda sobre phishing. Navegue pelo labirinto e 
 #### 🔒 Fase 3: Praça da Privacidade // EM IMPLEMENTACAO
 Proteja seus dados pessoais e configure sua privacidade. Enfrente o "Ladrão de Dados" no desafio final.
 
+#### A ser feito ... 
+ Fase 4: Fortaleza do Firewall
+ Fase 5: Cofre dos Backups
+
 ---
 
 ## 🚀 Instalação e Deploy
