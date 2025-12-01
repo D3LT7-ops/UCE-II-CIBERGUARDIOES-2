@@ -53,10 +53,10 @@
 #### 🔐 Fase 1: Fortaleza das Senhas
 Aprenda a criar senhas fortes e seguras. Resolva 3 desafios e derrote o vilão "Senha Fraca".
 
-#### 🔗 Fase 2: Labirinto dos Links
+#### 🔗 Fase 2: Labirinto dos Links // EM IMPLEMENTACAO
 Identifique links maliciosos e aprenda sobre phishing. Navegue pelo labirinto e derrote o "Link Malicioso".
 
-#### 🔒 Fase 3: Praça da Privacidade
+#### 🔒 Fase 3: Praça da Privacidade // EM IMPLEMENTACAO
 Proteja seus dados pessoais e configure sua privacidade. Enfrente o "Ladrão de Dados" no desafio final.
 
 ---
