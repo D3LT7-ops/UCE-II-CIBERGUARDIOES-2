@@ -182,17 +182,6 @@ ciber-guardioes/
 - [ ] Comparação com amigos
 - [ ] Exportar certificado de conclusão
 
-#### 🌐 Multiplayer
-- [ ] Modo cooperativo local
-- [ ] Desafios semanais online
-- [ ] Chat de segurança moderado
-
-#### 📱 Multiplataforma
-- [ ] Versão mobile responsiva
-- [ ] App Android/iOS nativo
-- [ ] Controle via gamepad
-- [ ] Suporte a touchscreen otimizado
-
 #### 🧩 Conteúdo Adicional
 - [ ] Fase 4: Fortaleza do Firewall
 - [ ] Fase 5: Cofre dos Backups
