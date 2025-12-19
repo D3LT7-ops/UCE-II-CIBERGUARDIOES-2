@@ -62,7 +62,7 @@ const phase2Data = {
     ],
     
     boss: {
-        x: 850, y: 580, width: 60, height: 60,
+        x: 470, y: 320, width: 60, height: 60,
         active: false, 
         defeated: false, 
         hp: 3, 
@@ -347,14 +347,16 @@ function checkPhase2Collisions() {
     });
 }
 
+// IMPORTANTE: Esta função deve ser chamada no loop principal do jogo
+// Adicione no seu gameLoop ou update principal: updatePhase2Boss();
 function updatePhase2Boss() {
     if (!phase2Data.boss.active || phase2Data.boss.defeated || !phase2Data.boss.isMoving) return;
     
     const boss = phase2Data.boss;
     const now = Date.now();
     
-    // Mudar direção a cada 2 segundos
-    if (now - boss.lastDirectionChange > 2000) {
+    // Mudar direção a cada 2 segundos ou aleatoriamente
+    if (now - boss.lastDirectionChange > 1500) {
         const directions = [
             {x: 1, y: 0},   // Direita
             {x: -1, y: 0},  // Esquerda
@@ -362,6 +364,8 @@ function updatePhase2Boss() {
             {x: 0, y: -1},  // Cima
             {x: 1, y: 1},   // Diagonal direita-baixo
             {x: -1, y: 1},  // Diagonal esquerda-baixo
+            {x: 1, y: -1},  // Diagonal direita-cima
+            {x: -1, y: -1}, // Diagonal esquerda-cima
         ];
         boss.direction = directions[Math.floor(Math.random() * directions.length)];
         boss.lastDirectionChange = now;
@@ -382,8 +386,8 @@ function updatePhase2Boss() {
         }
     });
     
-    // Verificar limites da área do boss (não deixar sair muito longe)
-    if (newX < 700 || newX > 920 || newY < 420 || newY > 620) {
+    // Verificar limites da área do boss (pode se mover por toda a tela)
+    if (newX < 20 || newX > 920 || newY < 20 || newY > 620) {
         canMove = false;
     }
     
@@ -391,7 +395,7 @@ function updatePhase2Boss() {
         boss.x = newX;
         boss.y = newY;
     } else {
-        // Se colidir, inverter direção
+        // Se colidir, mudar direção imediatamente
         boss.direction.x *= -1;
         boss.direction.y *= -1;
         boss.lastDirectionChange = now;
