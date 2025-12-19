@@ -1,4 +1,4 @@
-// FASE 2: LABIRINTO DOS LINKS - CORRIGIDO E FUNCIONAL
+// FASE 2: LABIRINTO DOS LINKS - VERSÃO MELHORADA
 
 const phase2Data = {
     title: '◢ LABIRINTO DOS LINKS ◣',
@@ -14,8 +14,9 @@ const phase2Data = {
             dialogue: [
                 '🛡️ Oi, ' + gameState.playerName + '! Sou o Guardião do Firewall!',
                 'Siga pelo caminho e encontre os 3 cristais! 🔍',
+                'O labirinto tem CAMINHOS SECRETOS! Explore tudo! 🗺️',
                 'No final, você encontrará o vilão! Boa sorte! 💪',
-                'Dica: Explore todo o labirinto! 🗺️'
+                'DICA: Procure por passagens escondidas nas paredes! 👀'
             ],
             talked: false
         }
@@ -23,8 +24,8 @@ const phase2Data = {
     
     puzzles: [
         {
-            // Puzzle 1 - Área superior direita
-            x: 700, y: 120, width: 50, height: 50,
+            // Puzzle 1 - Área superior direita (mais difícil de achar)
+            x: 780, y: 80, width: 50, height: 50,
             completed: false,
             question: '🔗 Qual desses links parece SEGURO?',
             options: [
@@ -35,8 +36,8 @@ const phase2Data = {
             ]
         },
         {
-            // Puzzle 2 - Área central
-            x: 450, y: 350, width: 50, height: 50,
+            // Puzzle 2 - Área central (em um beco)
+            x: 350, y: 480, width: 50, height: 50,
             completed: false,
             question: '📧 Você recebe um email estranho. O que fazer?',
             options: [
@@ -47,8 +48,8 @@ const phase2Data = {
             ]
         },
         {
-            // Puzzle 3 - Área inferior direita (antes do boss)
-            x: 800, y: 550, width: 50, height: 50,
+            // Puzzle 3 - Área secreta no canto inferior esquerdo
+            x: 80, y: 600, width: 50, height: 50,
             completed: false,
             question: '⚠️ O que indica que um email é FALSO?',
             options: [
@@ -61,12 +62,19 @@ const phase2Data = {
     ],
     
     boss: {
-        // Boss no canto inferior direito
-        x: 880, y: 580, width: 60, height: 60,
-        active: false, defeated: false, hp: 3, maxHp: 3
+        x: 850, y: 580, width: 60, height: 60,
+        active: false, 
+        defeated: false, 
+        hp: 3, 
+        maxHp: 3,
+        isMoving: false,
+        speed: 2.5,
+        direction: { x: 1, y: 0 },
+        lastDirectionChange: Date.now(),
+        movementStartTime: null
     },
     
-    // LABIRINTO REDESENHADO - Caminhos claros e navegáveis
+    // LABIRINTO REDESENHADO - Mais complexo e interessante
     maze: [
         // ===== BORDAS EXTERNAS =====
         {x: 0, y: 0, width: 1000, height: 20},        // Topo
@@ -74,37 +82,61 @@ const phase2Data = {
         {x: 0, y: 0, width: 20, height: 700},         // Esquerda
         {x: 980, y: 0, width: 20, height: 700},       // Direita
         
-        // ===== DIVISÓRIAS HORIZONTAIS =====
-        // Linha superior (y=200)
-        {x: 20, y: 200, width: 350, height: 20},      // Esquerda
-        {x: 480, y: 200, width: 300, height: 20},     // Centro-direita
+        // ===== SEÇÃO SUPERIOR (Área de entrada e primeiro puzzle) =====
+        {x: 20, y: 180, width: 200, height: 20},      // Parede horizontal superior esquerda
+        {x: 280, y: 120, width: 20, height: 180},     // Coluna divisória 1
+        {x: 300, y: 120, width: 150, height: 20},     // Teto sala 1
+        {x: 450, y: 20, width: 20, height: 200},      // Coluna divisória 2
+        {x: 540, y: 180, width: 200, height: 20},     // Parede horizontal superior direita
+        {x: 740, y: 20, width: 20, height: 180},      // Parede antes do puzzle 1
+        {x: 880, y: 20, width: 20, height: 180},      // Parede lateral direita superior
         
-        // Linha central (y=400)
-        {x: 250, y: 400, width: 300, height: 20},     // Centro
-        {x: 650, y: 400, width: 150, height: 20},     // Direita
+        // ===== SEÇÃO CENTRAL (Corredores principais) =====
+        {x: 150, y: 280, width: 20, height: 140},     // Pilar esquerdo 1
+        {x: 20, y: 350, width: 130, height: 20},      // Parede horizontal esquerda
+        {x: 220, y: 320, width: 150, height: 20},     // Parede horizontal central 1
+        {x: 370, y: 250, width: 20, height: 90},      // Coluna vertical central
+        {x: 470, y: 280, width: 20, height: 180},     // Grande pilar central
+        {x: 550, y: 340, width: 150, height: 20},     // Parede horizontal central direita
+        {x: 700, y: 240, width: 20, height: 120},     // Pilar direito central
+        {x: 780, y: 280, width: 100, height: 20},     // Pequena parede superior direita
+        {x: 820, y: 300, width: 20, height: 100},     // Coluna direita meio
         
-        // ===== DIVISÓRIAS VERTICAIS =====
-        // Coluna 1 (x=250)
-        {x: 250, y: 20, width: 20, height: 180},      // Superior
-        {x: 250, y: 420, width: 20, height: 180},     // Inferior
+        // ===== ÁREA DO LABIRINTO INFERIOR (Mais complexa) =====
+        {x: 60, y: 480, width: 180, height: 20},      // Entrada área inferior esquerda
+        {x: 240, y: 420, width: 20, height: 80},      // Divisória vertical esquerda
+        {x: 260, y: 500, width: 120, height: 20},     // Corredor inferior 1
+        {x: 380, y: 420, width: 20, height: 100},     // Parede vertical meio-esquerda
+        {x: 300, y: 580, width: 100, height: 20},     // Parede horizontal inferior 1
+        {x: 480, y: 480, width: 20, height: 120},     // Grande coluna inferior central
+        {x: 500, y: 520, width: 140, height: 20},     // Corredor inferior central
+        {x: 640, y: 440, width: 20, height: 100},     // Coluna inferior direita 1
+        {x: 580, y: 600, width: 80, height: 20},      // Pequena parede inferior
         
-        // Coluna 2 (x=480)
-        {x: 480, y: 220, width: 20, height: 180},     // Superior-meio
+        // ===== ÁREA DO BOSS (Canto inferior direito) =====
+        {x: 720, y: 480, width: 20, height: 80},      // Entrada do boss (esquerda)
+        {x: 740, y: 560, width: 80, height: 20},      // Entrada do boss (baixo)
+        {x: 780, y: 420, width: 20, height: 60},      // Parede lateral boss
+        {x: 900, y: 480, width: 20, height: 100},     // Parede direita área boss
         
-        // Coluna 3 (x=650)
-        {x: 650, y: 20, width: 20, height: 180},      // Superior
-        {x: 650, y: 420, width: 20, height: 120},     // Inferior
+        // ===== PASSAGENS SECRETAS (Caminhos alternativos) =====
+        // Deixar espaços vazios intencionalmente para criar passagens secretas
+        // Passagem secreta 1: entre x=220-240 na altura y=180
+        {x: 180, y: 200, width: 40, height: 20},      // Falsa parede com passagem
         
-        // ===== OBSTÁCULOS ADICIONAIS (para criar caminhos interessantes) =====
-        {x: 120, y: 80, width: 20, height: 100},      // Obstáculo esquerdo superior
-        {x: 380, y: 280, width: 80, height: 20},      // Obstáculo horizontal meio
-        {x: 550, y: 280, width: 20, height: 100},     // Obstáculo vertical meio
-        {x: 800, y: 220, width: 20, height: 160},     // Obstáculo direito meio
-        {x: 120, y: 500, width: 100, height: 20},     // Obstáculo esquerdo inferior
+        // Passagem secreta 2: acesso ao puzzle 3 (área inferior esquerda)
+        {x: 20, y: 560, width: 40, height: 20},       // Abertura na parede esquerda
         
-        // ===== PAREDES PARA CRIAR O CAMINHO ATÉ O BOSS =====
-        {x: 820, y: 500, width: 20, height: 80},      // Parede antes do boss (esquerda)
-        {x: 750, y: 640, width: 100, height: 20},     // Parede embaixo
+        // ===== OBSTÁCULOS DECORATIVOS (Pilares pequenos) =====
+        {x: 550, y: 100, width: 30, height: 30},      // Pilar decorativo 1
+        {x: 120, y: 540, width: 30, height: 30},      // Pilar decorativo 2
+        {x: 850, y: 380, width: 30, height: 30},      // Pilar decorativo 3
+    ],
+    
+    // Áreas especiais para efeitos visuais
+    secretPaths: [
+        {x: 180, y: 180, width: 60, height: 40},      // Caminho secreto 1
+        {x: 20, y: 540, width: 60, height: 40}        // Caminho secreto 2
     ]
 };
 
@@ -160,6 +192,7 @@ function drawPhase2Puzzles() {
         
         ctx.shadowBlur = 25 + pulse;
         
+        // Hexágono do cristal
         ctx.beginPath();
         for (let i = 0; i < 6; i++) {
             const angle = (Math.PI / 3) * i;
@@ -182,6 +215,7 @@ function drawPhase2Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '🔗', puzzle.x + 25, puzzle.y + 25);
         
+        // Partículas orbitando
         if (!puzzle.completed) {
             for (let i = 0; i < 6; i++) {
                 const angle = (Date.now() / 600 + i * Math.PI / 3) % (Math.PI * 2);
@@ -194,6 +228,7 @@ function drawPhase2Puzzles() {
             }
         }
         
+        // Indicador de interação
         if (!puzzle.completed) {
             ctx.fillStyle = 'rgba(255, 255, 0, 0.9)';
             ctx.font = 'bold 16px Rajdhani';
@@ -207,50 +242,83 @@ function drawPhase2Puzzles() {
 }
 
 function drawPhase2Maze() {
+    // Desenhar caminhos secretos com efeito especial
+    phase2Data.secretPaths.forEach(path => {
+        const glow = Math.sin(Date.now() / 500) * 10 + 10;
+        ctx.fillStyle = `rgba(0, 255, 100, 0.1)`;
+        ctx.fillRect(path.x, path.y, path.width, path.height);
+        
+        ctx.strokeStyle = `rgba(0, 255, 100, 0.3)`;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.strokeRect(path.x, path.y, path.width, path.height);
+        ctx.setLineDash([]);
+    });
+    
+    // Desenhar paredes do labirinto
     phase2Data.maze.forEach(wall => {
-        // Gradiente 3D
+        // Gradiente 3D melhorado
         const gradient = ctx.createLinearGradient(wall.x, wall.y, wall.x + wall.width, wall.y + wall.height);
-        gradient.addColorStop(0, '#34495e');
+        gradient.addColorStop(0, '#445566');
         gradient.addColorStop(0.5, '#2c3e50');
         gradient.addColorStop(1, '#1a252f');
         
         ctx.fillStyle = gradient;
         ctx.fillRect(wall.x, wall.y, wall.width, wall.height);
         
-        // Luzes
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fillRect(wall.x, wall.y, wall.width, 2);
-        ctx.fillRect(wall.x, wall.y, 2, wall.height);
+        // Highlights superiores
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.fillRect(wall.x, wall.y, wall.width, 3);
+        ctx.fillRect(wall.x, wall.y, 3, wall.height);
         
-        // Sombras
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.fillRect(wall.x, wall.y + wall.height - 2, wall.width, 2);
-        ctx.fillRect(wall.x + wall.width - 2, wall.y, 2, wall.height);
+        // Sombras inferiores
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.fillRect(wall.x, wall.y + wall.height - 3, wall.width, 3);
+        ctx.fillRect(wall.x + wall.width - 3, wall.y, 3, wall.height);
         
-        // Contorno
+        // Contorno definido
         ctx.strokeStyle = '#1a252f';
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 2;
         ctx.strokeRect(wall.x, wall.y, wall.width, wall.height);
+        
+        // Textura de circuito nas paredes
+        if (wall.width > 50 || wall.height > 50) {
+            ctx.strokeStyle = 'rgba(0, 255, 100, 0.1)';
+            ctx.lineWidth = 1;
+            const lines = Math.floor(Math.max(wall.width, wall.height) / 30);
+            for (let i = 0; i < lines; i++) {
+                const offset = (i * 30) + 10;
+                if (wall.width > wall.height) {
+                    ctx.beginPath();
+                    ctx.moveTo(wall.x + offset, wall.y + 5);
+                    ctx.lineTo(wall.x + offset, wall.y + wall.height - 5);
+                    ctx.stroke();
+                } else {
+                    ctx.beginPath();
+                    ctx.moveTo(wall.x + 5, wall.y + offset);
+                    ctx.lineTo(wall.x + wall.width - 5, wall.y + offset);
+                    ctx.stroke();
+                }
+            }
+        }
     });
     
-    // Desenhar grid de ajuda (linha pontilhada sutil)
-    ctx.strokeStyle = 'rgba(0, 255, 65, 0.1)';
+    // Grid sutil de ajuda
+    ctx.strokeStyle = 'rgba(0, 255, 65, 0.08)';
     ctx.lineWidth = 1;
-    ctx.setLineDash([5, 15]);
+    ctx.setLineDash([3, 10]);
     
-    // Linhas verticais
     for (let x = 100; x < 1000; x += 100) {
         ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, 700);
+        ctx.moveTo(x, 20);
+        ctx.lineTo(x, 680);
         ctx.stroke();
     }
     
-    // Linhas horizontais
     for (let y = 100; y < 700; y += 100) {
         ctx.beginPath();
-        ctx.moveTo(0, y);
-        ctx.lineTo(1000, y);
+        ctx.moveTo(20, y);
+        ctx.lineTo(980, y);
         ctx.stroke();
     }
     
@@ -279,58 +347,135 @@ function checkPhase2Collisions() {
     });
 }
 
+function updatePhase2Boss() {
+    if (!phase2Data.boss.active || phase2Data.boss.defeated || !phase2Data.boss.isMoving) return;
+    
+    const boss = phase2Data.boss;
+    const now = Date.now();
+    
+    // Mudar direção a cada 2 segundos
+    if (now - boss.lastDirectionChange > 2000) {
+        const directions = [
+            {x: 1, y: 0},   // Direita
+            {x: -1, y: 0},  // Esquerda
+            {x: 0, y: 1},   // Baixo
+            {x: 0, y: -1},  // Cima
+            {x: 1, y: 1},   // Diagonal direita-baixo
+            {x: -1, y: 1},  // Diagonal esquerda-baixo
+        ];
+        boss.direction = directions[Math.floor(Math.random() * directions.length)];
+        boss.lastDirectionChange = now;
+    }
+    
+    // Mover o boss
+    const newX = boss.x + boss.direction.x * boss.speed;
+    const newY = boss.y + boss.direction.y * boss.speed;
+    
+    // Verificar colisão com paredes antes de mover
+    let canMove = true;
+    phase2Data.maze.forEach(wall => {
+        if (newX < wall.x + wall.width &&
+            newX + boss.width > wall.x &&
+            newY < wall.y + wall.height &&
+            newY + boss.height > wall.y) {
+            canMove = false;
+        }
+    });
+    
+    // Verificar limites da área do boss (não deixar sair muito longe)
+    if (newX < 700 || newX > 920 || newY < 420 || newY > 620) {
+        canMove = false;
+    }
+    
+    if (canMove) {
+        boss.x = newX;
+        boss.y = newY;
+    } else {
+        // Se colidir, inverter direção
+        boss.direction.x *= -1;
+        boss.direction.y *= -1;
+        boss.lastDirectionChange = now;
+    }
+}
+
 function drawPhase2Boss() {
     if (!phase2Data.boss.active || phase2Data.boss.defeated) return;
     
-    const shake = phase2Data.boss.hp < 2 ? Math.sin(Date.now() / 50) * 2 : 0;
+    const boss = phase2Data.boss;
+    const shake = boss.hp < 2 ? Math.sin(Date.now() / 50) * 2 : 0;
+    const moveGlow = boss.isMoving ? Math.sin(Date.now() / 200) * 10 + 30 : 30;
+    
+    // Rastro de movimento
+    if (boss.isMoving) {
+        ctx.shadowColor = '#e67e22';
+        ctx.shadowBlur = moveGlow;
+        ctx.fillStyle = 'rgba(230, 126, 34, 0.2)';
+        ctx.beginPath();
+        ctx.arc(boss.x + 30, boss.y + 30, 45, 0, Math.PI * 2);
+        ctx.fill();
+    }
     
     ctx.shadowColor = '#e67e22';
     ctx.shadowBlur = 40;
     
-    ctx.fillStyle = '#e67e22';
-    ctx.fillRect(phase2Data.boss.x + shake, phase2Data.boss.y, phase2Data.boss.width, phase2Data.boss.height);
+    // Corpo principal
+    ctx.fillStyle = boss.isMoving ? '#e74c3c' : '#e67e22';
+    ctx.fillRect(boss.x + shake, boss.y, boss.width, boss.height);
     
     ctx.strokeStyle = '#d35400';
     ctx.lineWidth = 4;
-    ctx.strokeRect(phase2Data.boss.x, phase2Data.boss.y, phase2Data.boss.width, phase2Data.boss.height);
+    ctx.strokeRect(boss.x, boss.y, boss.width, boss.height);
     
+    // Antenas/Cabelo malicioso
     ctx.fillStyle = '#d35400';
     for (let i = 0; i < 4; i++) {
         const offset = Math.sin(Date.now() / 200 + i) * 5;
-        ctx.fillRect(phase2Data.boss.x + 5 + i * 13, phase2Data.boss.y + 10 + offset, 10, 4);
+        ctx.fillRect(boss.x + 5 + i * 13, boss.y + 10 + offset, 10, 4);
     }
     
-    ctx.fillStyle = '#000';
-    ctx.fillRect(phase2Data.boss.x + 15, phase2Data.boss.y + 28, 14, 14);
-    ctx.fillRect(phase2Data.boss.x + 31, phase2Data.boss.y + 28, 14, 14);
+    // Olhos malignos
+    ctx.fillStyle = boss.isMoving ? '#ff0000' : '#000';
+    ctx.fillRect(boss.x + 15, boss.y + 28, 14, 14);
+    ctx.fillRect(boss.x + 31, boss.y + 28, 14, 14);
     
+    // Boca sorrindo (vilão)
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.arc(phase2Data.boss.x + 30, phase2Data.boss.y + 48, 12, 0.1 * Math.PI, 0.9 * Math.PI);
+    ctx.arc(boss.x + 30, boss.y + 48, 12, 0.1 * Math.PI, 0.9 * Math.PI);
     ctx.stroke();
     
     ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
-    ctx.fillRect(phase2Data.boss.x - 5, phase2Data.boss.y - 25, phase2Data.boss.width + 10, 12);
     
-    ctx.fillStyle = '#e67e22';
-    const hpWidth = ((phase2Data.boss.width + 10) * phase2Data.boss.hp) / phase2Data.boss.maxHp;
-    ctx.fillRect(phase2Data.boss.x - 5, phase2Data.boss.y - 25, hpWidth, 12);
+    // Barra de HP
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fillRect(boss.x - 5, boss.y - 25, boss.width + 10, 12);
+    
+    ctx.fillStyle = boss.hp === 3 ? '#00ff41' : boss.hp === 2 ? '#f39c12' : '#e74c3c';
+    const hpWidth = ((boss.width + 10) * boss.hp) / boss.maxHp;
+    ctx.fillRect(boss.x - 5, boss.y - 25, hpWidth, 12);
     
     ctx.strokeStyle = '#d35400';
     ctx.lineWidth = 2;
-    ctx.strokeRect(phase2Data.boss.x - 5, phase2Data.boss.y - 25, phase2Data.boss.width + 10, 12);
+    ctx.strokeRect(boss.x - 5, boss.y - 25, boss.width + 10, 12);
     
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 11px Rajdhani';
     ctx.textAlign = 'center';
-    ctx.fillText(`HP: ${phase2Data.boss.hp}/${phase2Data.boss.maxHp}`, phase2Data.boss.x + 30, phase2Data.boss.y - 16);
+    ctx.fillText(`HP: ${boss.hp}/${boss.maxHp}`, boss.x + 30, boss.y - 16);
     
-    if (isNear(player, phase2Data.boss, 150)) {
+    // Status de movimento
+    if (boss.isMoving) {
+        ctx.fillStyle = '#ff3333';
+        ctx.font = 'bold 12px Rajdhani';
+        ctx.fillText('⚡ ALERTA ⚡', boss.x + 30, boss.y - 38);
+    }
+    
+    // Indicador de interação
+    if (isNear(player, boss, 150)) {
         ctx.fillStyle = 'rgba(255, 255, 0, 0.9)';
         ctx.font = 'bold 18px Rajdhani';
-        ctx.fillText('PRESSIONE ESPAÇO!', phase2Data.boss.x + 30, phase2Data.boss.y - 35);
+        ctx.fillText('PRESSIONE ESPAÇO!', boss.x + 30, boss.isMoving ? boss.y - 50 : boss.y - 35);
     }
 }
 
@@ -358,6 +503,20 @@ function checkPhase2Interactions() {
         phase2Data.boss.hp--;
         audioManager.playBossHit();
         createExplosion(phase2Data.boss.x + 30, phase2Data.boss.y + 30, '#e67e22');
+        
+        // ATIVAR MOVIMENTO APÓS O PRIMEIRO HIT
+        if (phase2Data.boss.hp === 2 && !phase2Data.boss.isMoving) {
+            phase2Data.boss.isMoving = true;
+            phase2Data.boss.movementStartTime = Date.now();
+            phase2Data.boss.speed = 2.5;
+            showDialogue('⚠️ O hacker está FUGINDO! Persiga-o! 🏃‍♂️💨');
+        }
+        
+        // Aumentar velocidade no último HP
+        if (phase2Data.boss.hp === 1) {
+            phase2Data.boss.speed = 3.5;
+            showDialogue('🚨 CUIDADO! Ele está mais RÁPIDO agora! 💥');
+        }
         
         if (phase2Data.boss.hp <= 0) {
             phase2Data.boss.defeated = true;
