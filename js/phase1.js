@@ -1,5 +1,3 @@
-// FASE 1: FORTALEZA DAS SENHAS - VERSÃO SIMPLIFICADA PARA CRIANÇAS
-
 const phase1Data = {
     title: '◢ FORTALEZA DAS SENHAS ◣',
     puzzlesCompleted: 0,
@@ -70,27 +68,23 @@ function drawPhase1NPCs() {
         ctx.shadowColor = '#f39c12';
         ctx.shadowBlur = 15;
         
-        // Corpo da coruja
         ctx.fillStyle = '#f39c12';
         ctx.beginPath();
         ctx.arc(npc.x + 25, npc.y + 25, 20 + pulse, 0, Math.PI * 2);
         ctx.fill();
         
-        // Olhos grandes e amigáveis
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.arc(npc.x + 18, npc.y + 20, 7, 0, Math.PI * 2);
         ctx.arc(npc.x + 32, npc.y + 20, 7, 0, Math.PI * 2);
         ctx.fill();
         
-        // Pupilas
         ctx.fillStyle = '#000';
         ctx.beginPath();
         ctx.arc(npc.x + 18, npc.y + 20, 3, 0, Math.PI * 2);
         ctx.arc(npc.x + 32, npc.y + 20, 3, 0, Math.PI * 2);
         ctx.fill();
         
-        // Bico
         ctx.fillStyle = '#e67e22';
         ctx.beginPath();
         ctx.moveTo(npc.x + 25, npc.y + 26);
@@ -98,14 +92,12 @@ function drawPhase1NPCs() {
         ctx.lineTo(npc.x + 30, npc.y + 32);
         ctx.fill();
         
-        // Efeito de brilho amigável
         ctx.strokeStyle = 'rgba(243, 156, 18, 0.3)';
         ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(npc.x + 25, npc.y + 25, 28, 0, Math.PI * 2);
         ctx.stroke();
         
-        // Emoji acima da coruja
         ctx.shadowBlur = 0;
         ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
@@ -130,7 +122,6 @@ function drawPhase1Puzzles() {
         
         ctx.shadowBlur = 20 + pulse;
         
-        // Diamante maior e mais visível
         ctx.beginPath();
         ctx.moveTo(puzzle.x + 25, puzzle.y);
         ctx.lineTo(puzzle.x + 50, puzzle.y + 25);
@@ -139,7 +130,6 @@ function drawPhase1Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Brilho interno
         ctx.fillStyle = puzzle.completed ? '#00ff41' : '#c39bd3';
         ctx.beginPath();
         ctx.moveTo(puzzle.x + 25, puzzle.y + 10);
@@ -149,7 +139,6 @@ function drawPhase1Puzzles() {
         ctx.closePath();
         ctx.fill();
         
-        // Símbolo maior
         ctx.shadowBlur = 0;
         ctx.fillStyle = '#000';
         ctx.font = 'bold 24px Orbitron';
@@ -157,7 +146,6 @@ function drawPhase1Puzzles() {
         ctx.textBaseline = 'middle';
         ctx.fillText(puzzle.completed ? '✓' : '?', puzzle.x + 25, puzzle.y + 25);
         
-        // Partículas mais visíveis
         if (!puzzle.completed) {
             for (let i = 0; i < 4; i++) {
                 const angle = (Date.now() / 1000 + i * 1.5) % (Math.PI * 2);
@@ -170,7 +158,6 @@ function drawPhase1Puzzles() {
             }
         }
         
-        // Indicador visual "PRESSIONE ESPAÇO"
         if (!puzzle.completed && isNear(player, puzzle, 100)) {
             ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
             ctx.font = 'bold 14px Rajdhani';
@@ -187,18 +174,15 @@ function drawPhase1Boss() {
     ctx.shadowColor = '#ff0000';
     ctx.shadowBlur = 30;
     
-    // Corpo do boss maior
     ctx.fillStyle = '#e74c3c';
     ctx.fillRect(phase1Data.boss.x + shake, phase1Data.boss.y, phase1Data.boss.width, phase1Data.boss.height);
     
-    // Dados corrompidos
     ctx.fillStyle = '#c0392b';
     for (let i = 0; i < 5; i++) {
         const offset = Math.sin(Date.now() / 200 + i) * 3;
         ctx.fillRect(phase1Data.boss.x + 10 + i * 8 + offset, phase1Data.boss.y + 10, 6, 40);
     }
     
-    // Rosto maligno mais visível
     ctx.fillStyle = '#000';
     ctx.fillRect(phase1Data.boss.x + 15, phase1Data.boss.y + 18, 12, 12);
     ctx.fillRect(phase1Data.boss.x + 35, phase1Data.boss.y + 18, 12, 12);
@@ -207,14 +191,12 @@ function drawPhase1Boss() {
     ctx.fillRect(phase1Data.boss.x + 18, phase1Data.boss.y + 21, 6, 6);
     ctx.fillRect(phase1Data.boss.x + 38, phase1Data.boss.y + 21, 6, 6);
     
-    // Sorriso maligno
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 4;
     ctx.beginPath();
     ctx.arc(phase1Data.boss.x + 30, phase1Data.boss.y + 38, 14, 0, Math.PI);
     ctx.stroke();
     
-    // Barra de HP mais visível
     ctx.shadowBlur = 0;
     ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
     ctx.fillRect(phase1Data.boss.x - 5, phase1Data.boss.y - 20, phase1Data.boss.width + 10, 10);
@@ -227,13 +209,11 @@ function drawPhase1Boss() {
     ctx.lineWidth = 2;
     ctx.strokeRect(phase1Data.boss.x - 5, phase1Data.boss.y - 20, phase1Data.boss.width + 10, 10);
     
-    // Texto HP
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 10px Rajdhani';
     ctx.textAlign = 'center';
     ctx.fillText(`${phase1Data.boss.hp}/${phase1Data.boss.maxHp}`, phase1Data.boss.x + 30, phase1Data.boss.y - 12);
     
-    // Indicador "CHEGUE PERTO"
     if (isNear(player, phase1Data.boss, 150)) {
         ctx.fillStyle = 'rgba(255, 255, 0, 0.8)';
         ctx.font = 'bold 16px Rajdhani';
@@ -244,7 +224,6 @@ function drawPhase1Boss() {
 function checkPhase1Interactions() {
     if (gameState.paused) return;
     
-    // NPCs
     phase1Data.npcs.forEach(npc => {
         if (isNear(player, npc) && npc.hasDialogue && !npc.talked) {
             audioManager.playInteract();
@@ -255,7 +234,6 @@ function checkPhase1Interactions() {
         }
     });
 
-    // Puzzles
     phase1Data.puzzles.forEach((puzzle, index) => {
         if (isNear(player, puzzle) && !puzzle.completed) {
             audioManager.playInteract();
@@ -263,7 +241,6 @@ function checkPhase1Interactions() {
         }
     });
 
-    // Boss
     if (phase1Data.boss.active && !phase1Data.boss.defeated && isNear(player, phase1Data.boss)) {
         phase1Data.boss.hp--;
         audioManager.playBossHit();
