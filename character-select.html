@@ -290,12 +290,11 @@
         <div class="header">
             <h1 class="game-title">⚡ PERSONALIZE SEU GUARDIÃO ⚡</h1>
             <p class="subtitle">Crie o herói perfeito para proteger o Ciber Reino!</p>
-</div>
+        </div>
 
         <div class="main-grid">
             <!-- Seção de Preview -->
-
-                
+            <div class="preview-section">
                 <div class="character-preview">
                     <canvas id="characterCanvas" width="300" height="350"></canvas>
                 </div>
@@ -468,61 +467,145 @@
             const centerX = 150;
             const centerY = 175;
 
-            // Corpo
+            // Corpo - Ajustar forma baseado no gênero
             ctx.fillStyle = character.outfitColor;
-            ctx.fillRect(centerX - 40, centerY + 20, 80, 100);
+            if (character.gender === 'female') {
+                // Corpo feminino - mais curvilíneo
+                ctx.beginPath();
+                ctx.moveTo(centerX - 35, centerY + 20);
+                ctx.lineTo(centerX - 40, centerY + 60);
+                ctx.lineTo(centerX - 35, centerY + 120);
+                ctx.lineTo(centerX + 35, centerY + 120);
+                ctx.lineTo(centerX + 40, centerY + 60);
+                ctx.lineTo(centerX + 35, centerY + 20);
+                ctx.closePath();
+                ctx.fill();
+            } else {
+                // Corpo masculino - mais reto
+                ctx.fillRect(centerX - 40, centerY + 20, 80, 100);
+            }
             
             // Braços
             ctx.fillRect(centerX - 65, centerY + 30, 25, 70);
             ctx.fillRect(centerX + 40, centerY + 30, 25, 70);
 
-            // Cabeça
+            // Pescoço
             ctx.fillStyle = character.skinColor;
+            ctx.fillRect(centerX - 15, centerY + 5, 30, 15);
+
+            // Cabeça - Ajustar tamanho baseado no gênero
+            const headSize = character.gender === 'female' ? 38 : 40;
             ctx.beginPath();
-            ctx.arc(centerX, centerY - 20, 40, 0, Math.PI * 2);
+            ctx.arc(centerX, centerY - 20, headSize, 0, Math.PI * 2);
             ctx.fill();
 
-            // Cabelo
+            // Cabelo - Diferente para cada gênero
             if (character.hairStyle !== 'bald') {
                 ctx.fillStyle = character.hairColor;
                 if (character.hairStyle === 'short') {
-                    ctx.fillRect(centerX - 45, centerY - 55, 90, 40);
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
-                    ctx.fill();
-                } else if (character.hairStyle === 'long') {
-                    ctx.fillRect(centerX - 45, centerY - 55, 90, character.gender === 'female' ? 90 : 60);
-                    ctx.beginPath();
-                    ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
-                    ctx.fill();
-                } else if (character.hairStyle === 'spiky') {
-                    for (let i = 0; i < 7; i++) {
+                    if (character.gender === 'female') {
+                        // Cabelo curto feminino - mais arredondado
+                        ctx.fillRect(centerX - 42, centerY - 55, 84, 35);
                         ctx.beginPath();
-                        ctx.moveTo(centerX - 40 + i * 13, centerY - 50);
-                        ctx.lineTo(centerX - 35 + i * 13, centerY - 70);
-                        ctx.lineTo(centerX - 30 + i * 13, centerY - 50);
+                        ctx.arc(centerX, centerY - 55, 42, Math.PI, 0);
+                        ctx.fill();
+                    } else {
+                        // Cabelo curto masculino
+                        ctx.fillRect(centerX - 45, centerY - 55, 90, 40);
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
+                        ctx.fill();
+                    }
+                } else if (character.hairStyle === 'long') {
+                    if (character.gender === 'female') {
+                        // Cabelo longo feminino - vai até os ombros
+                        ctx.fillRect(centerX - 45, centerY - 55, 90, 100);
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
+                        ctx.fill();
+                        // Cachos nas pontas
+                        ctx.beginPath();
+                        ctx.arc(centerX - 35, centerY + 40, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(centerX + 35, centerY + 40, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        // Cabelo longo masculino
+                        ctx.fillRect(centerX - 45, centerY - 55, 90, 60);
+                        ctx.beginPath();
+                        ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
+                        ctx.fill();
+                    }
+                } else if (character.hairStyle === 'spiky') {
+                    // Espetado - mesmo estilo para ambos mas com variação
+                    const spikes = character.gender === 'female' ? 5 : 7;
+                    const spacing = 80 / spikes;
+                    for (let i = 0; i < spikes; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(centerX - 40 + i * spacing, centerY - 50);
+                        ctx.lineTo(centerX - 35 + i * spacing, centerY - 70);
+                        ctx.lineTo(centerX - 30 + i * spacing, centerY - 50);
                         ctx.fill();
                     }
                 } else if (character.hairStyle === 'curly') {
-                    for (let i = 0; i < 5; i++) {
-                        ctx.beginPath();
-                        ctx.arc(centerX - 40 + i * 20, centerY - 50, 15, 0, Math.PI * 2);
-                        ctx.fill();
+                    // Encaracolado
+                    if (character.gender === 'female') {
+                        // Cachos femininos - mais volumosos
+                        for (let row = 0; row < 3; row++) {
+                            for (let i = 0; i < 4; i++) {
+                                ctx.beginPath();
+                                ctx.arc(centerX - 30 + i * 20, centerY - 50 + row * 15, 12, 0, Math.PI * 2);
+                                ctx.fill();
+                            }
+                        }
+                    } else {
+                        // Cachos masculinos
+                        for (let i = 0; i < 5; i++) {
+                            ctx.beginPath();
+                            ctx.arc(centerX - 40 + i * 20, centerY - 50, 15, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
                     }
                 }
             }
 
-            // Olhos
+            // Olhos - Maiores para feminino
+            const eyeSize = character.gender === 'female' ? 6 : 5;
             ctx.fillStyle = character.eyeColor;
             ctx.beginPath();
-            ctx.arc(centerX - 15, centerY - 20, 5, 0, Math.PI * 2);
+            ctx.arc(centerX - 15, centerY - 20, eyeSize, 0, Math.PI * 2);
             ctx.fill();
             ctx.beginPath();
-            ctx.arc(centerX + 15, centerY - 20, 5, 0, Math.PI * 2);
+            ctx.arc(centerX + 15, centerY - 20, eyeSize, 0, Math.PI * 2);
             ctx.fill();
 
-            // Boca
-            ctx.strokeStyle = '#000';
+            // Cílios para feminino
+            if (character.gender === 'female') {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                // Cílios esquerdos
+                ctx.beginPath();
+                ctx.moveTo(centerX - 15, centerY - 26);
+                ctx.lineTo(centerX - 18, centerY - 28);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(centerX - 12, centerY - 26);
+                ctx.lineTo(centerX - 14, centerY - 29);
+                ctx.stroke();
+                // Cílios direitos
+                ctx.beginPath();
+                ctx.moveTo(centerX + 15, centerY - 26);
+                ctx.lineTo(centerX + 18, centerY - 28);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(centerX + 12, centerY - 26);
+                ctx.lineTo(centerX + 14, centerY - 29);
+                ctx.stroke();
+            }
+
+            // Boca - Sorriso diferente
+            ctx.strokeStyle = character.gender === 'female' ? '#FF69B4' : '#000';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(centerX, centerY, 12, 0.1 * Math.PI, 0.9 * Math.PI);
@@ -554,9 +637,26 @@
                 ctx.lineTo(centerX + 30, centerY - 55);
                 ctx.closePath();
                 ctx.fill();
+                // Joias na coroa para feminino
+                if (character.gender === 'female') {
+                    ctx.fillStyle = '#FF1493';
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY - 68, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             } else if (character.accessory === 'headband') {
-                ctx.fillStyle = '#e74c3c';
+                ctx.fillStyle = character.gender === 'female' ? '#FF69B4' : '#e74c3c';
                 ctx.fillRect(centerX - 45, centerY - 30, 90, 10);
+                // Laço para feminino
+                if (character.gender === 'female') {
+                    ctx.fillStyle = '#FF1493';
+                    ctx.beginPath();
+                    ctx.arc(centerX + 40, centerY - 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(centerX + 50, centerY - 25, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                }
             } else if (character.accessory === 'hat') {
                 ctx.fillStyle = '#000';
                 ctx.fillRect(centerX - 50, centerY - 60, 100, 10);
@@ -579,7 +679,7 @@
                 ctx.moveTo(centerX + 75, centerY + 30);
                 ctx.lineTo(centerX + 75, centerY + 110);
                 ctx.stroke();
-                ctx.fillStyle = '#9b59b6';
+                ctx.fillStyle = character.gender === 'female' ? '#FF69B4' : '#9b59b6';
                 ctx.beginPath();
                 ctx.arc(centerX + 75, centerY + 25, 12, 0, Math.PI * 2);
                 ctx.fill();
@@ -607,7 +707,7 @@
                 ctx.fillRect(centerX + 70, centerY + 40, 6, 60);
                 ctx.fillRect(centerX - 76, centerY + 40, 6, 60);
             } else if (character.weapon === 'magic') {
-                ctx.fillStyle = '#00CED1';
+                ctx.fillStyle = character.gender === 'female' ? '#FF69B4' : '#00CED1';
                 ctx.beginPath();
                 ctx.arc(centerX + 75, centerY + 60, 15, 0, Math.PI * 2);
                 ctx.fill();
@@ -640,31 +740,57 @@
         }
 
         function saveCharacter() {
-            character.name = document.getElementById('characterName').value || 'Guardião';
-            localStorage.setItem('customCharacter', JSON.stringify(character));
+            const playerName = localStorage.getItem('playerName') || 'Guardião';
+            character.name = playerName;
             
-            // Efeito de confirmação
+            // Salvar personagem customizado
+            localStorage.setItem('customCharacter', JSON.stringify(character));
+            localStorage.setItem('selectedCharacter', 'custom');
+            
+            // Efeito visual de confirmação
             const btn = event.target;
+            const originalText = btn.textContent;
             btn.textContent = '✓ SALVO!';
             btn.style.background = '#00cc33';
+            btn.style.transform = 'scale(1.1)';
             
+            // Som de confirmação
+            playSelectSound();
+            
+            // Redirecionar para tutorial.html (mesmo local do código original)
             setTimeout(() => {
                 window.location.href = 'tutorial.html';
             }, 800);
         }
 
+        function playSelectSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 523.25; // C5
+                oscillator.type = 'sine';
+                
+                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                console.log('Áudio não disponível');
+            }
+        }
+
         // Inicializar
         init();
 
-        // Verificar se tem nome salvo
+        // Verificar se tem nome salvo, senão redirecionar
         if (!localStorage.getItem('playerName')) {
-            const savedName = prompt('Qual é o seu nome?');
-            if (savedName) {
-                localStorage.setItem('playerName', savedName);
-                document.getElementById('characterName').value = savedName;
-            }
-        } else {
-            document.getElementById('characterName').value = localStorage.getItem('playerName');
+            window.location.href = 'index.html';
         }
     </script>
 </body>
