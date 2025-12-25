@@ -3,117 +3,392 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Escolha seu Guardião - Ciber Guardiões</title>
-    <link rel="stylesheet" href="css/character-select.css">
+    <title>Personalize seu Guardião - Ciber Guardiões</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
 </head>
 <body>
-    <canvas id="matrixBg"></canvas>
-    
     <div class="container">
-        <div class="select-container">
-            <h1 class="game-title">⚡ ESCOLHA SEU GUARDIÃO ⚡</h1>
-            <p class="subtitle">Quem vai proteger o Ciber Reino?</p>
+        <div class="header">
+            <h1 class="game-title">⚡ PERSONALIZE SEU GUARDIÃO ⚡</h1>
+            <p class="subtitle">Crie o herói perfeito para proteger o Ciber Reino!</p>
+        </div>
 
-            <div class="characters-grid">
-                <!-- Personagem Link (Masculino) -->
-                <div class="character-card" data-character="link" onclick="selectCharacter('link')">
-                    <div class="character-avatar link-avatar">
-                        <div class="avatar-body"></div>
-                        <div class="avatar-head"></div>
-                        <div class="avatar-hair"></div>
-                        <div class="avatar-eyes"></div>
-                        <div class="avatar-sword"></div>
-                        <div class="avatar-shield"></div>
-                    </div>
-                    <h2 class="character-name">ALEX</h2>
-                    <p class="character-description">
-                        Corajoso e estratégico<br>
-                        Especialista em senhas fortes
-                    </p>
-                    <div class="character-stats">
-                        <div class="stat">⚔️ Ataque: ⭐⭐⭐⭐</div>
-                        <div class="stat">🛡️ Defesa: ⭐⭐⭐⭐</div>
-                        <div class="stat">🧠 Inteligência: ⭐⭐⭐⭐⭐</div>
-                    </div>
-                    <button class="select-btn">ESCOLHER ALEX</button>
+        <div class="main-grid">
+            <!-- Seção de Preview -->
+            
+                <div class="character-preview">
+                    <canvas id="characterCanvas" width="300" height="350"></canvas>
                 </div>
 
-                <!-- Personagem Zelda (Feminino) -->
-                <div class="character-card" data-character="zelda" onclick="selectCharacter('zelda')">
-                    <div class="character-avatar zelda-avatar">
-                        <div class="avatar-body"></div>
-                        <div class="avatar-head"></div>
-                        <div class="avatar-hair-long"></div>
-                        <div class="avatar-eyes"></div>
-                        <div class="avatar-crown"></div>
-                        <div class="avatar-magic"></div>
+                <div class="stats-display">
+                    <div class="stat-item">
+                        <div class="stat-icon">⚔️</div>
+                        <div class="stat-label">Ataque</div>
+                        <div id="attackStat">⭐⭐⭐⭐</div>
                     </div>
-                    <h2 class="character-name">LUNA</h2>
-                    <p class="character-description">
-                        Sábia e determinada<br>
-                        Mestra em proteção de dados
-                    </p>
-                    <div class="character-stats">
-                        <div class="stat">⚔️ Ataque: ⭐⭐⭐⭐</div>
-                        <div class="stat">🛡️ Defesa: ⭐⭐⭐⭐⭐</div>
-                        <div class="stat">🧠 Inteligência: ⭐⭐⭐⭐⭐</div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🛡️</div>
+                        <div class="stat-label">Defesa</div>
+                        <div id="defenseStat">⭐⭐⭐⭐</div>
                     </div>
-                    <button class="select-btn">ESCOLHER LUNA</button>
+                    <div class="stat-item">
+                        <div class="stat-icon">🧠</div>
+                        <div class="stat-label">Inteligência</div>
+                        <div id="intelligenceStat">⭐⭐⭐⭐⭐</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="randomize()">🎲 ALEATÓRIO</button>
+                    <button class="btn btn-primary" onclick="saveCharacter()">✓ CONFIRMAR</button>
                 </div>
             </div>
 
-            <button class="back-btn" onclick="window.location.href='index.html'">
-                ◂ VOLTAR
-            </button>
+            <!-- Painel de Customização -->
+            <div class="customization-panel">
+                <!-- Gênero -->
+                <div class="custom-section">
+                    <div class="section-title">👤 GÊNERO</div>
+                    <div class="gender-selector">
+                        <button class="gender-btn selected" onclick="setGender('male')">🧑 MASCULINO</button>
+                        <button class="gender-btn" onclick="setGender('female')">👩 FEMININO</button>
+                    </div>
+                </div>
+
+                <!-- Cor da Pele -->
+                <div class="custom-section">
+                    <div class="section-title">🎨 COR DA PELE</div>
+                    <div class="options-grid" id="skinColorOptions"></div>
+                </div>
+
+                <!-- Cor do Cabelo -->
+                <div class="custom-section">
+                    <div class="section-title">💇 COR DO CABELO</div>
+                    <div class="options-grid" id="hairColorOptions"></div>
+                </div>
+
+                <!-- Estilo do Cabelo -->
+                <div class="custom-section">
+                    <div class="section-title">✂️ ESTILO DO CABELO</div>
+                    <div class="options-grid" id="hairStyleOptions"></div>
+                </div>
+
+                <!-- Cor dos Olhos -->
+                <div class="custom-section">
+                    <div class="section-title">👁️ COR DOS OLHOS</div>
+                    <div class="options-grid" id="eyeColorOptions"></div>
+                </div>
+
+                <!-- Cor da Roupa -->
+                <div class="custom-section">
+                    <div class="section-title">👕 COR DA ROUPA</div>
+                    <div class="options-grid" id="outfitColorOptions"></div>
+                </div>
+
+                <!-- Acessórios -->
+                <div class="custom-section">
+                    <div class="section-title">✨ ACESSÓRIOS</div>
+                    <div class="options-grid" id="accessoryOptions"></div>
+                </div>
+
+                <!-- Arma -->
+                <div class="custom-section">
+                    <div class="section-title">⚔️ ARMA</div>
+                    <div class="options-grid" id="weaponOptions"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn" onclick="window.location.href='index.html'">◂ VOLTAR</button>
         </div>
     </div>
 
-    <script src="js/matrix-bg.js"></script>
     <script>
-        function selectCharacter(character) {
-            // Salvar personagem escolhido
-            localStorage.setItem('selectedCharacter', character);
+        const canvas = document.getElementById('characterCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const character = {
+            gender: 'male',
+            skinColor: '#ffcc99',
+            hairColor: '#8B4513',
+            hairStyle: 'short',
+            eyeColor: '#000000',
+            outfitColor: '#00ff41',
+            accessory: 'none',
+            weapon: 'sword',
+            name: ''
+        };
+
+        const skinColors = ['#ffcc99', '#f5d5b8', '#e6b88a', '#d9a574', '#c68563', '#8d5524', '#5c4033', '#3d2817'];
+        const hairColors = ['#000000', '#2c1b18', '#8B4513', '#A0522D', '#FFD700', '#FFA500', '#FF6347', '#4B0082', '#00CED1', '#FF69B4'];
+        const eyeColors = ['#000000', '#4169E1', '#228B22', '#8B4513', '#FF1493', '#00CED1'];
+        const outfitColors = ['#00ff41', '#9b59b6', '#e74c3c', '#3498db', '#f39c12', '#1abc9c', '#e67e22', '#95a5a6'];
+        const hairStyles = ['short', 'long', 'spiky', 'curly', 'bald'];
+        const accessories = ['none', 'glasses', 'crown', 'headband', 'hat', 'mask'];
+        const weapons = ['sword', 'staff', 'bow', 'shield', 'dual', 'magic'];
+
+        function init() {
+            createColorOptions('skinColorOptions', skinColors, 'skinColor');
+            createColorOptions('hairColorOptions', hairColors, 'hairColor');
+            createColorOptions('eyeColorOptions', eyeColors, 'eyeColor');
+            createColorOptions('outfitColorOptions', outfitColors, 'outfitColor');
+            createStyleOptions('hairStyleOptions', hairStyles, 'hairStyle', ['💇', '💇‍♀️', '🦱', '🌊', '⚪']);
+            createStyleOptions('accessoryOptions', accessories, 'accessory', ['❌', '👓', '👑', '🎀', '🎩', '🎭']);
+            createStyleOptions('weaponOptions', weapons, 'weapon', ['⚔️', '🪄', '🏹', '🛡️', '⚔️⚔️', '✨']);
+            drawCharacter();
+        }
+
+        function createColorOptions(containerId, colors, property) {
+            const container = document.getElementById(containerId);
+            colors.forEach(color => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn' + (character[property] === color ? ' selected' : '');
+                btn.style.background = color;
+                btn.onclick = () => {
+                    character[property] = color;
+                    updateSelectedButton(containerId, btn);
+                    drawCharacter();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function createStyleOptions(containerId, styles, property, icons) {
+            const container = document.getElementById(containerId);
+            styles.forEach((style, index) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-btn' + (character[property] === style ? ' selected' : '');
+                btn.innerHTML = `<div class="accessory-icon">${icons[index]}</div>`;
+                btn.onclick = () => {
+                    character[property] = style;
+                    updateSelectedButton(containerId, btn);
+                    drawCharacter();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function updateSelectedButton(containerId, selectedBtn) {
+            const container = document.getElementById(containerId);
+            Array.from(container.children).forEach(btn => btn.classList.remove('selected'));
+            selectedBtn.classList.add('selected');
+        }
+
+        function setGender(gender) {
+            character.gender = gender;
+            document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            drawCharacter();
+        }
+
+        function drawCharacter() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const centerX = 150;
+            const centerY = 175;
+
+            // Corpo
+            ctx.fillStyle = character.outfitColor;
+            ctx.fillRect(centerX - 40, centerY + 20, 80, 100);
             
-            // Efeito visual de seleção
-            const cards = document.querySelectorAll('.character-card');
-            cards.forEach(card => card.classList.remove('selected'));
-            document.querySelector(`[data-character="${character}"]`).classList.add('selected');
+            // Braços
+            ctx.fillRect(centerX - 65, centerY + 30, 25, 70);
+            ctx.fillRect(centerX + 40, centerY + 30, 25, 70);
+
+            // Cabeça
+            ctx.fillStyle = character.skinColor;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 20, 40, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cabelo
+            if (character.hairStyle !== 'bald') {
+                ctx.fillStyle = character.hairColor;
+                if (character.hairStyle === 'short') {
+                    ctx.fillRect(centerX - 45, centerY - 55, 90, 40);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
+                    ctx.fill();
+                } else if (character.hairStyle === 'long') {
+                    ctx.fillRect(centerX - 45, centerY - 55, 90, character.gender === 'female' ? 90 : 60);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY - 55, 45, Math.PI, 0);
+                    ctx.fill();
+                } else if (character.hairStyle === 'spiky') {
+                    for (let i = 0; i < 7; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(centerX - 40 + i * 13, centerY - 50);
+                        ctx.lineTo(centerX - 35 + i * 13, centerY - 70);
+                        ctx.lineTo(centerX - 30 + i * 13, centerY - 50);
+                        ctx.fill();
+                    }
+                } else if (character.hairStyle === 'curly') {
+                    for (let i = 0; i < 5; i++) {
+                        ctx.beginPath();
+                        ctx.arc(centerX - 40 + i * 20, centerY - 50, 15, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Olhos
+            ctx.fillStyle = character.eyeColor;
+            ctx.beginPath();
+            ctx.arc(centerX - 15, centerY - 20, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(centerX + 15, centerY - 20, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Boca
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 12, 0.1 * Math.PI, 0.9 * Math.PI);
+            ctx.stroke();
+
+            // Acessórios
+            if (character.accessory === 'glasses') {
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(centerX - 15, centerY - 20, 10, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX + 15, centerY - 20, 10, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(centerX - 5, centerY - 20);
+                ctx.lineTo(centerX + 5, centerY - 20);
+                ctx.stroke();
+            } else if (character.accessory === 'crown') {
+                ctx.fillStyle = '#FFD700';
+                ctx.beginPath();
+                ctx.moveTo(centerX - 30, centerY - 55);
+                ctx.lineTo(centerX - 20, centerY - 70);
+                ctx.lineTo(centerX - 10, centerY - 60);
+                ctx.lineTo(centerX, centerY - 75);
+                ctx.lineTo(centerX + 10, centerY - 60);
+                ctx.lineTo(centerX + 20, centerY - 70);
+                ctx.lineTo(centerX + 30, centerY - 55);
+                ctx.closePath();
+                ctx.fill();
+            } else if (character.accessory === 'headband') {
+                ctx.fillStyle = '#e74c3c';
+                ctx.fillRect(centerX - 45, centerY - 30, 90, 10);
+            } else if (character.accessory === 'hat') {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(centerX - 50, centerY - 60, 100, 10);
+                ctx.fillRect(centerX - 35, centerY - 90, 70, 30);
+            } else if (character.accessory === 'mask') {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(centerX - 25, centerY - 30, 50, 20);
+            }
+
+            // Arma
+            if (character.weapon === 'sword') {
+                ctx.fillStyle = '#C0C0C0';
+                ctx.fillRect(centerX + 70, centerY + 40, 8, 80);
+                ctx.fillStyle = '#FFD700';
+                ctx.fillRect(centerX + 65, centerY + 35, 18, 10);
+            } else if (character.weapon === 'staff') {
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.moveTo(centerX + 75, centerY + 30);
+                ctx.lineTo(centerX + 75, centerY + 110);
+                ctx.stroke();
+                ctx.fillStyle = '#9b59b6';
+                ctx.beginPath();
+                ctx.arc(centerX + 75, centerY + 25, 12, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (character.weapon === 'bow') {
+                ctx.strokeStyle = '#8B4513';
+                ctx.lineWidth = 4;
+                ctx.beginPath();
+                ctx.moveTo(centerX + 70, centerY + 30);
+                ctx.quadraticCurveTo(centerX + 90, centerY + 60, centerX + 70, centerY + 90);
+                ctx.stroke();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(centerX + 70, centerY + 35);
+                ctx.lineTo(centerX + 70, centerY + 85);
+                ctx.stroke();
+            } else if (character.weapon === 'shield') {
+                ctx.fillStyle = '#4169E1';
+                ctx.fillRect(centerX - 75, centerY + 40, 30, 40);
+                ctx.strokeStyle = '#FFD700';
+                ctx.lineWidth = 4;
+                ctx.strokeRect(centerX - 75, centerY + 40, 30, 40);
+            } else if (character.weapon === 'dual') {
+                ctx.fillStyle = '#C0C0C0';
+                ctx.fillRect(centerX + 70, centerY + 40, 6, 60);
+                ctx.fillRect(centerX - 76, centerY + 40, 6, 60);
+            } else if (character.weapon === 'magic') {
+                ctx.fillStyle = '#00CED1';
+                ctx.beginPath();
+                ctx.arc(centerX + 75, centerY + 60, 15, 0, Math.PI * 2);
+                ctx.fill();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI) / 3;
+                    const x = centerX + 75 + Math.cos(angle) * 20;
+                    const y = centerY + 60 + Math.sin(angle) * 20;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+        }
+
+        function randomize() {
+            character.gender = Math.random() > 0.5 ? 'male' : 'female';
+            character.skinColor = skinColors[Math.floor(Math.random() * skinColors.length)];
+            character.hairColor = hairColors[Math.floor(Math.random() * hairColors.length)];
+            character.hairStyle = hairStyles[Math.floor(Math.random() * hairStyles.length)];
+            character.eyeColor = eyeColors[Math.floor(Math.random() * eyeColors.length)];
+            character.outfitColor = outfitColors[Math.floor(Math.random() * outfitColors.length)];
+            character.accessory = accessories[Math.floor(Math.random() * accessories.length)];
+            character.weapon = weapons[Math.floor(Math.random() * weapons.length)];
             
-            // Som de seleção (opcional)
-            playSelectSound();
+            document.querySelectorAll('.gender-btn').forEach((btn, i) => {
+                btn.classList.toggle('selected', (i === 0 && character.gender === 'male') || (i === 1 && character.gender === 'female'));
+            });
             
-            // Redirecionar após animação
+            init();
+        }
+
+        function saveCharacter() {
+            character.name = document.getElementById('characterName').value || 'Guardião';
+            localStorage.setItem('customCharacter', JSON.stringify(character));
+            
+            // Efeito de confirmação
+            const btn = event.target;
+            btn.textContent = '✓ SALVO!';
+            btn.style.background = '#00cc33';
+            
             setTimeout(() => {
                 window.location.href = 'tutorial.html';
             }, 800);
         }
 
-        function playSelectSound() {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = 523.25; // C5
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + 0.3);
-            } catch (e) {
-                console.log('Áudio não disponível');
-            }
-        }
+        // Inicializar
+        init();
 
         // Verificar se tem nome salvo
         if (!localStorage.getItem('playerName')) {
-            window.location.href = 'index.html';
+            const savedName = prompt('Qual é o seu nome?');
+            if (savedName) {
+                localStorage.setItem('playerName', savedName);
+                document.getElementById('characterName').value = savedName;
+            }
+        } else {
+            document.getElementById('characterName').value = localStorage.getItem('playerName');
         }
     </script>
+        
 </body>
 </html>
