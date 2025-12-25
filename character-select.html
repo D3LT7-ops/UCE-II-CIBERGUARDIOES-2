@@ -4,20 +4,298 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalize seu Guardião - Ciber Guardiões</title>
-    <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #00ff41;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .game-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px #00ff41;
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 30px #00ff41; }
+            50% { text-shadow: 0 0 50px #00ff41, 0 0 80px #00ff41; }
+        }
+
+        .subtitle {
+            font-size: 22px;
+            opacity: 0.9;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .preview-section {
+            background: rgba(0, 255, 65, 0.05);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+        }
+
+        .character-preview {
+            width: 300px;
+            height: 350px;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .preview-canvas {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .character-name-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 24px;
+            font-family: 'Orbitron', monospace;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .character-name-input::placeholder {
+            color: rgba(0, 255, 65, 0.5);
+        }
+
+        .customization-panel {
+            background: rgba(0, 255, 65, 0.05);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        .custom-section {
+            margin-bottom: 30px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ff41;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+            gap: 10px;
+        }
+
+        .option-btn {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+        }
+
+        .option-btn.selected {
+            border-width: 4px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
+            background: rgba(0, 255, 65, 0.2);
+        }
+
+        .color-option {
+            width: 100%;
+            height: 100%;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 18px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            border: 2px solid #00ff41;
+            background: transparent;
+            color: #00ff41;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background: #00ff41;
+            color: #000;
+            box-shadow: 0 0 30px #00ff41;
+        }
+
+        .btn-primary {
+            background: #00ff41;
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #00cc33;
+            box-shadow: 0 0 40px #00ff41;
+        }
+
+        .gender-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .gender-btn {
+            flex: 1;
+            padding: 20px;
+            font-size: 20px;
+            border: 2px solid #00ff41;
+            background: rgba(0, 255, 65, 0.05);
+            color: #00ff41;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .gender-btn.selected {
+            background: rgba(0, 255, 65, 0.3);
+            border-width: 4px;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
+        }
+
+        .accessory-icon {
+            font-size: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stats-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: rgba(0, 255, 65, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 65, 0.3);
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Estilos do Canvas do Personagem */
+        .avatar-part {
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1 class="game-title">⚡ PERSONALIZE SEU GUARDIÃO ⚡</h1>
             <p class="subtitle">Crie o herói perfeito para proteger o Ciber Reino!</p>
-        </div>
+</div>
 
         <div class="main-grid">
             <!-- Seção de Preview -->
-            
+
+                
                 <div class="character-preview">
                     <canvas id="characterCanvas" width="300" height="350"></canvas>
                 </div>
@@ -389,6 +667,5 @@
             document.getElementById('characterName').value = localStorage.getItem('playerName');
         }
     </script>
-        
 </body>
 </html>
