@@ -1,279 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
-            color: #00ff41;
-            overflow-x: hidden;
-            min-height: 100vh;
-        }
+body {
+    font-family: 'Rajdhani', sans-serif;
+    background: #000;
+    color: #00ff41;
+    overflow-x: hidden;
+}
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+#matrixBg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.15;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            animation: fadeIn 0.5s ease;
-        }
+.container {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
 
-        .game-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 48px;
-            font-weight: 900;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px #00ff41;
-            letter-spacing: 3px;
-            animation: pulse 2s infinite;
-        }
+.select-container {
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #00ff41;
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.3), inset 0 0 40px rgba(0, 255, 65, 0.1);
+    padding: 40px;
+    text-align: center;
+    max-width: 1200px;
+    width: 100%;
+    animation: glitchIn 0.5s ease;
+}
 
-        @keyframes pulse {
-            0%, 100% { text-shadow: 0 0 30px #00ff41; }
-            50% { text-shadow: 0 0 50px #00ff41, 0 0 80px #00ff41; }
-        }
+@keyframes glitchIn {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
 
-        .subtitle {
-            font-size: 22px;
-            opacity: 0.9;
-        }
+.game-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 10px;
+    text-shadow: 0 0 30px #00ff41;
+    letter-spacing: 3px;
+    animation: pulse 2s infinite;
+}
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 30px;
-            margin-bottom: 30px;
-        }
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 30px #00ff41; }
+    50% { text-shadow: 0 0 50px #00ff41, 0 0 80px #00ff41; }
+}
 
-        .preview-section {
-            background: rgba(0, 255, 65, 0.05);
-            border: 3px solid #00ff41;
-            border-radius: 15px;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
-        }
+.subtitle {
+    font-size: 22px;
+    margin-bottom: 50px;
+    opacity: 0.9;
+}
 
-        .character-preview {
-            width: 300px;
-            height: 350px;
-            position: relative;
-            margin-bottom: 30px;
-        }
+.characters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
 
-        .preview-canvas {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            animation: float 3s ease-in-out infinite;
-        }
+.character-card {
+    background: rgba(0, 255, 65, 0.05);
+    border: 3px solid #00ff41;
+    padding: 30px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+}
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
+.character-card:hover {
+    background: rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 40px rgba(0, 255, 65, 0.5);
+    transform: translateY(-10px) scale(1.02);
+}
 
-        .character-name-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 24px;
-            font-family: 'Orbitron', monospace;
-            background: rgba(0, 0, 0, 0.5);
-            border: 2px solid #00ff41;
-            color: #00ff41;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+.character-card.selected {
+    background: rgba(0, 255, 65, 0.25);
+    border-width: 5px;
+    box-shadow: 0 0 60px rgba(0, 255, 65, 0.8);
+    animation: selectedPulse 0.5s ease;
+}
 
-        .character-name-input::placeholder {
-            color: rgba(0, 255, 65, 0.5);
-        }
+@keyframes selectedPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
 
-        .customization-panel {
-            background: rgba(0, 255, 65, 0.05);
-            border: 3px solid #00ff41;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 0 40px rgba(0, 255, 65, 0.3);
-            overflow-y: auto;
-            max-height: 80vh;
-        }
+.character-avatar {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 25px;
+    position: relative;
+    animation: float 3s ease-in-out infinite;
+}
 
-        .custom-section {
-            margin-bottom: 30px;
-            animation: slideIn 0.5s ease;
-        }
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+}
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+/* Personagem Link (Alex) */
+.link-avatar .avatar-body {
+    position: absolute;
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%);
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+}
 
-        .section-title {
-            font-family: 'Orbitron', monospace;
-            font-size: 20px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 10px #00ff41;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+.link-avatar .avatar-head {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #ffcc99;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 204, 153, 0.5);
+}
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
-            gap: 10px;
-        }
+.link-avatar .avatar-hair {
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    background: #8B4513;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 0 0;
+}
 
-        .option-btn {
-            width: 60px;
-            height: 60px;
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
+.link-avatar .avatar-eyes {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #000;
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    box-shadow: 15px 0 0 #000;
+}
 
-        .option-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-        }
+.link-avatar .avatar-sword {
+    position: absolute;
+    width: 8px;
+    height: 80px;
+    background: linear-gradient(180deg, silver 0%, #999 100%);
+    bottom: 30px;
+    right: 10px;
+    transform: rotate(45deg);
+}
 
-        .option-btn.selected {
-            border-width: 4px;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.8);
-            background: rgba(0, 255, 65, 0.2);
-        }
+.link-avatar .avatar-shield {
+    position: absolute;
+    width: 40px;
+    height: 50px;
+    background: #4169E1;
+    bottom: 40px;
+    left: 10px;
+    border-radius: 5px;
+    border: 3px solid #FFD700;
+}
 
-        .color-option {
-            width: 100%;
-            height: 100%;
-            border: none;
-            cursor: pointer;
-        }
+/* Personagem Zelda (Luna) */
+.zelda-avatar .avatar-body {
+    position: absolute;
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+}
 
-        .action-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 20px;
-        }
+.zelda-avatar .avatar-head {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: #ffcc99;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(255, 204, 153, 0.5);
+}
 
-        .btn {
-            padding: 15px 40px;
-            font-size: 18px;
-            font-family: 'Orbitron', monospace;
-            font-weight: 700;
-            border: 2px solid #00ff41;
-            background: transparent;
-            color: #00ff41;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            border-radius: 5px;
-        }
+.zelda-avatar .avatar-hair-long {
+    position: absolute;
+    width: 70px;
+    height: 90px;
+    background: #DAA520;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50% 50% 40% 40%;
+}
 
-        .btn:hover {
-            background: #00ff41;
-            color: #000;
-            box-shadow: 0 0 30px #00ff41;
-        }
+.zelda-avatar .avatar-eyes {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #1E90FF;
+    top: 45px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    box-shadow: 15px 0 0 #1E90FF;
+}
 
-        .btn-primary {
-            background: #00ff41;
-            color: #000;
-        }
+.zelda-avatar .avatar-crown {
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    background: #FFD700;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 0 0 10px 10px;
+    clip-path: polygon(20% 0%, 40% 100%, 60% 100%, 80% 0%, 100% 50%, 50% 50%, 0% 50%);
+}
 
-        .btn-primary:hover {
-            background: #00cc33;
-            box-shadow: 0 0 40px #00ff41;
-        }
+.zelda-avatar .avatar-magic {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, #FFD700 0%, transparent 70%);
+    bottom: 60px;
+    right: 0;
+    border-radius: 50%;
+    animation: magicGlow 2s ease-in-out infinite;
+}
 
-        .gender-selector {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+@keyframes magicGlow {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
 
-        .gender-btn {
-            flex: 1;
-            padding: 20px;
-            font-size: 20px;
-            border: 2px solid #00ff41;
-            background: rgba(0, 255, 65, 0.05);
-            color: #00ff41;
-            cursor: pointer;
-            border-radius: 10px;
-            transition: all 0.3s;
-            font-family: 'Orbitron', monospace;
-        }
+.character-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 32px;
+    margin-bottom: 15px;
+    text-shadow: 0 0 15px #00ff41;
+}
 
-        .gender-btn.selected {
-            background: rgba(0, 255, 65, 0.3);
-            border-width: 4px;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.5);
-        }
+.character-description {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
 
-        .accessory-icon {
-            font-size: 35px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
+.character-stats {
+    margin-bottom: 25px;
+    text-align: left;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+.stat {
+    padding: 8px 0;
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 255, 65, 0.2);
+}
 
-        .stats-display {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
+.select-btn {
+    background: transparent;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    padding: 15px 40px;
+    font-size: 18px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    width: 100%;
+}
 
-        .stat-item {
-            background: rgba(0, 255, 65, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-        }
+.select-btn:hover {
+    background: #00ff41;
+    color: #000;
+    box-shadow: 0 0 30px #00ff41;
+}
 
-        .stat-icon {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
+.back-btn {
+    background: transparent;
+    border: 2px solid #00ff41;
+    color: #00ff41;
+    padding: 15px 40px;
+    font-size: 16px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-transform: uppercase;
+}
 
-        .stat-label {
-            font-size: 12px;
-            opacity: 0.8;
-        }
+.back-btn:hover {
+    background: #00ff41;
+    color: #000;
+}
 
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Estilos do Canvas do Personagem */
-        .avatar-part {
-            position: absolute;
-            transition: all 0.3s ease;
-        }
+@media (max-width: 768px) {
+    .characters-grid {
+        grid-template-columns: 1fr;
+    }
     
+    .game-title {
+        font-size: 32px;
+    }
+    
+    .select-container {
+        padding: 20px;
+    }
+}
