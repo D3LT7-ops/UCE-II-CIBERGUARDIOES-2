@@ -1,6 +1,6 @@
 # 🛡️ Ciber Guardiões: A Aventura Digital Segura
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green)
 ![Versão](https://img.shields.io/badge/vers%C3%A3o-1.0.0-blue)
 ![Licença](https://img.shields.io/badge/licen%C3%A7a-Educational-green)
 
