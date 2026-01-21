@@ -1,155 +1,254 @@
-// FASE 1: FORTALEZA DAS SENHAS - OTIMIZADA
+// FASE 1: FORTALEZA DAS SENHAS - VERSÃO FUNCIONAL E OTIMIZADA
 
 const phase1Data = {
     title: '🏰 FORTALEZA DAS SENHAS 🔐',
     puzzlesCompleted: 0,
     bossDefeated: false,
     
-    // FORTALEZA - Estrutura simplificada
+    // FORTALEZA
     fortress: {
-        main: { x: 400, y: 200, w: 200, h: 250 },
+        x: 400, y: 200, width: 200, height: 250,
         towers: [
-            { x: 390, y: 180, s: 40 }, // tamanho fixo para torres
-            { x: 570, y: 180, s: 40 },
-            { x: 390, y: 410, s: 40 },
-            { x: 570, y: 410, s: 40 }
-        ],
-        gate: { x: 475, y: 430, w: 50, h: 25 }
+            { x: 390, y: 180 },
+            { x: 570, y: 180 },
+            { x: 390, y: 410 },
+            { x: 570, y: 410 }
+        ]
     },
     
-    // GUARDAS - Dados essenciais
+    // GUARDAS
     guards: [
-        { x: 200, y: 250, name: 'Guarda Maiúscula', emoji: 'A', color: '#3498db', patrol: [200, 350], msg: ['🛡️ Eu protejo as letras MAIÚSCULAS!', 'Use A, B, C nas suas senhas! 💪'], talked: false },
-        { x: 650, y: 250, name: 'Guarda Minúscula', emoji: 'a', color: '#2ecc71', patrol: [650, 800], msg: ['🛡️ Letras minúsculas também!', 'Misture maiúsculas E minúsculas! 🔒'], talked: false },
-        { x: 200, y: 500, name: 'Guarda Números', emoji: '7', color: '#e67e22', patrol: [200, 350], msg: ['🛡️ Números são importantes!', 'Adicione 1, 2, 3, 4, 5! 🔢'], talked: false },
-        { x: 650, y: 500, name: 'Guarda Símbolos', emoji: '@', color: '#9b59b6', patrol: [650, 800], msg: ['🛡️ Símbolos dão poder!', 'Use @, #, !, $ para segurança! ⚡'], talked: false },
-        { x: 300, y: 150, name: 'Vigia Norte', emoji: '🔐', color: '#e74c3c', patrol: [300, 350], msg: ['🗡️ Torre Norte vigiando!', 'NUNCA conte sua senha! 🚫'], talked: false },
-        { x: 700, y: 150, name: 'Vigia Sul', emoji: '🔑', color: '#f39c12', patrol: [700, 750], msg: ['🗡️ Torre Sul alerta!', 'Senha diferente para cada lugar! 🌟'], talked: false }
+        {
+            x: 200, y: 250, width: 40, height: 50,
+            name: 'Guarda Maiúscula',
+            emoji: 'A',
+            color: '#3498db',
+            patrolStart: 200,
+            patrolEnd: 350,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🛡️ Eu protejo as letras MAIÚSCULAS!',
+                'Use A, B, C nas suas senhas! 💪'
+            ]
+        },
+        {
+            x: 650, y: 250, width: 40, height: 50,
+            name: 'Guarda Minúscula',
+            emoji: 'a',
+            color: '#2ecc71',
+            patrolStart: 650,
+            patrolEnd: 800,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🛡️ Letras minúsculas também!',
+                'Misture maiúsculas E minúsculas! 🔒'
+            ]
+        },
+        {
+            x: 200, y: 500, width: 40, height: 50,
+            name: 'Guarda Números',
+            emoji: '7',
+            color: '#e67e22',
+            patrolStart: 200,
+            patrolEnd: 350,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🛡️ Números são importantes!',
+                'Adicione 1, 2, 3, 4, 5! 🔢'
+            ]
+        },
+        {
+            x: 650, y: 500, width: 40, height: 50,
+            name: 'Guarda Símbolos',
+            emoji: '@',
+            color: '#9b59b6',
+            patrolStart: 650,
+            patrolEnd: 800,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🛡️ Símbolos dão poder!',
+                'Use @, #, !, $ para segurança! ⚡'
+            ]
+        },
+        {
+            x: 300, y: 150, width: 40, height: 50,
+            name: 'Vigia Norte',
+            emoji: '🔐',
+            color: '#e74c3c',
+            patrolStart: 300,
+            patrolEnd: 350,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🗡️ Torre Norte vigiando!',
+                'NUNCA conte sua senha! 🚫'
+            ]
+        },
+        {
+            x: 700, y: 150, width: 40, height: 50,
+            name: 'Vigia Sul',
+            emoji: '🔑',
+            color: '#f39c12',
+            patrolStart: 700,
+            patrolEnd: 750,
+            patrolDir: 1,
+            talked: false,
+            dialogue: [
+                '🗡️ Torre Sul alerta!',
+                'Senha diferente para cada lugar! 🌟'
+            ]
+        }
     ],
     
-    // NPC PRINCIPAL
-    owl: { x: 500, y: 300, talked: false },
+    // CORUJA COMANDANTE
+    npcs: [
+        {
+            x: 500, y: 300, width: 60, height: 60,
+            type: 'owl',
+            name: 'Coruja Comandante',
+            hasDialogue: true,
+            talked: false,
+            dialogue: [
+                '🦉 Bem-vindo à FORTALEZA DAS SENHAS!',
+                'Eu sou a Comandante Coruja! 👑',
+                'Esta fortaleza protege os segredos da internet! 🏰',
+                'Um VILÃO tenta invadir com senhas fracas! 😱',
+                'Fale com os GUARDAS (escudos coloridos)! 🛡️',
+                'Resolva os 3 DESAFIOS (cristais roxos)! 💎',
+                'Depois enfrente o BOSS no portão! ⚔️'
+            ]
+        }
+    ],
     
     // PUZZLES
     puzzles: [
         {
-            x: 250, y: 350, icon: '🔐', done: false,
-            q: 'Qual senha é IMPOSSÍVEL de hackear?',
-            opts: [
-                { t: 'A) 123456', ok: false, fb: '❌ Pior senha do mundo! Hackers tentam ela primeiro! 😱' },
-                { t: 'B) senha', ok: false, fb: '❌ Muito óbvia! 🚫' },
-                { t: 'C) Fort3z@2025!', ok: true, fb: '✅ PERFEITO! Maiúsculas, minúsculas, números E símbolos! 🏆⭐' },
-                { t: 'D) meunome', ok: false, fb: '❌ Hackers descobrem nomes fácil! 👎' }
+            x: 250, y: 350, width: 50, height: 50,
+            completed: false,
+            title: 'DESAFIO 1',
+            icon: '🔐',
+            question: 'Qual senha é IMPOSSÍVEL de hackear?',
+            options: [
+                { text: 'A) 123456', correct: false, feedback: '❌ Pior senha do mundo! Hackers tentam ela primeiro! 😱' },
+                { text: 'B) senha', correct: false, feedback: '❌ Muito óbvia! 🚫' },
+                { text: 'C) Fort3z@2025!', correct: true, feedback: '✅ PERFEITO! Maiúsculas, minúsculas, números E símbolos! 🏆⭐' },
+                { text: 'D) meunome', correct: false, feedback: '❌ Hackers descobrem nomes fácil! 👎' }
             ]
         },
         {
-            x: 750, y: 350, icon: '🧪', done: false,
-            q: 'O que torna senha INDESTRUTÍVEL?',
-            opts: [
-                { t: 'A) Ser curtinha', ok: false, fb: '❌ Senhas curtas caem rápido! 🏰' },
-                { t: 'B) Só aniversário', ok: false, fb: '❌ Vilões descobrem online! 📅❌' },
-                { t: 'C) Maiúsculas+minúsculas+números+símbolos!', ok: true, fb: '✅ Receita PERFEITA! 🌟🎉' },
-                { t: 'D) Mesma em tudo', ok: false, fb: '❌ Se cai uma, caem TODAS! 🔒' }
+            x: 750, y: 350, width: 50, height: 50,
+            completed: false,
+            title: 'DESAFIO 2',
+            icon: '🧪',
+            question: 'O que torna senha INDESTRUTÍVEL?',
+            options: [
+                { text: 'A) Ser curtinha', correct: false, feedback: '❌ Senhas curtas caem rápido! 🏰' },
+                { text: 'B) Só aniversário', correct: false, feedback: '❌ Vilões descobrem online! 📅❌' },
+                { text: 'C) Maiúsculas+minúsculas+números+símbolos', correct: true, feedback: '✅ Receita PERFEITA! 🌟🎉' },
+                { text: 'D) Mesma em tudo', correct: false, feedback: '❌ Se cai uma, caem TODAS! 🔒' }
             ]
         },
         {
-            x: 500, y: 100, icon: '⚖️', done: false,
-            q: 'Quando PODE compartilhar senha?',
-            opts: [
-                { t: 'A) Amigos da escola', ok: false, fb: '❌ Podem contar sem querer! 🤐' },
-                { t: 'B) Só pais/responsáveis', ok: true, fb: '✅ CORRETO! Quem cuida de você! 👨‍👩‍👧✅' },
-                { t: 'C) Se pedirem educado', ok: false, fb: '❌ Honestos NUNCA pedem! ARMADILHA! 🚨' },
-                { t: 'D) Por mensagem', ok: false, fb: '❌ PERIGO! Hackers leem! 📱⛔' }
+            x: 500, y: 100, width: 50, height: 50,
+            completed: false,
+            title: 'DESAFIO 3',
+            icon: '⚖️',
+            question: 'Quando PODE compartilhar senha?',
+            options: [
+                { text: 'A) Amigos da escola', correct: false, feedback: '❌ Podem contar sem querer! 🤐' },
+                { text: 'B) Só pais/responsáveis', correct: true, feedback: '✅ CORRETO! Quem cuida de você! 👨‍👩‍👧✅' },
+                { text: 'C) Se pedirem educado', correct: false, feedback: '❌ Honestos NUNCA pedem! ARMADILHA! 🚨' },
+                { text: 'D) Por mensagem', correct: false, feedback: '❌ PERIGO! Hackers leem! 📱⛔' }
             ]
         }
     ],
     
     // BOSS
-    boss: { x: 480, y: 470, w: 80, h: 80, active: false, defeated: false, hp: 3, maxHp: 3 }
+    boss: {
+        x: 480, y: 470, width: 80, height: 80,
+        name: 'LORD SENHA FRACA',
+        active: false,
+        defeated: false,
+        hp: 3,
+        maxHp: 3
+    }
 };
-
-// Cache de paths para otimização
-const pathCache = {
-    shield: new Path2D(),
-    diamond: new Path2D()
-};
-
-// Inicializar paths uma vez
-function initPaths() {
-    // Shield path
-    pathCache.shield.moveTo(20, 0);
-    pathCache.shield.lineTo(8, 8);
-    pathCache.shield.lineTo(8, 18);
-    pathCache.shield.lineTo(20, 26);
-    pathCache.shield.lineTo(32, 18);
-    pathCache.shield.lineTo(32, 8);
-    pathCache.shield.closePath();
-    
-    // Diamond path
-    pathCache.diamond.moveTo(0, -25);
-    pathCache.diamond.lineTo(25, 0);
-    pathCache.diamond.lineTo(0, 25);
-    pathCache.diamond.lineTo(-25, 0);
-    pathCache.diamond.closePath();
-}
 
 // ============================================
-// DESENHO OTIMIZADO
+// FUNÇÕES DE DESENHO
 // ============================================
 
 function drawFortress() {
     const f = phase1Data.fortress;
     
-    // Sombra única para toda fortaleza
-    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    // Sombra da fortaleza
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
     ctx.shadowBlur = 20;
     ctx.shadowOffsetY = 10;
     
-    // Paredes - um único fillRect para cada
+    // Paredes principais
     ctx.fillStyle = '#7f8c8d';
-    ctx.fillRect(f.main.x, f.main.y, f.main.w, 20); // topo
-    ctx.fillRect(f.main.x, f.main.y + f.main.h - 20, f.main.w, 20); // base
-    ctx.fillRect(f.main.x, f.main.y, 20, f.main.h); // esquerda
-    ctx.fillRect(f.main.x + f.main.w - 20, f.main.y, 20, f.main.h); // direita
+    // Topo
+    ctx.fillRect(f.x, f.y, f.width, 20);
+    // Base
+    ctx.fillRect(f.x, f.y + f.height - 20, f.width, 20);
+    // Esquerda
+    ctx.fillRect(f.x, f.y, 20, f.height);
+    // Direita
+    ctx.fillRect(f.x + f.width - 20, f.y, 20, f.height);
     
-    // Torres compactas
+    // Torres
     ctx.fillStyle = '#95a5a6';
-    f.towers.forEach(t => {
-        ctx.fillRect(t.x, t.y, t.s, 60);
-        // Ameias simples
+    f.towers.forEach(tower => {
+        ctx.fillRect(tower.x, tower.y, 40, 60);
+        
+        // Ameias
         ctx.fillStyle = '#5d6d7e';
-        ctx.fillRect(t.x, t.y - 8, 10, 8);
-        ctx.fillRect(t.x + 15, t.y - 8, 10, 8);
-        ctx.fillRect(t.x + 30, t.y - 8, 10, 8);
+        ctx.fillRect(tower.x, tower.y - 8, 10, 8);
+        ctx.fillRect(tower.x + 15, tower.y - 8, 10, 8);
+        ctx.fillRect(tower.x + 30, tower.y - 8, 10, 8);
         ctx.fillStyle = '#95a5a6';
     });
     
     ctx.shadowBlur = 0;
+    ctx.shadowOffsetY = 0;
     
-    // Bandeiras animadas simplificadas
+    // Bandeiras animadas
     const wave = Math.sin(Date.now() / 300) * 3;
-    ctx.fillStyle = '#e74c3c';
-    f.towers.forEach(t => {
-        const fx = t.x + 10, fy = t.y;
-        ctx.fillRect(fx, fy - 30, 2, 30); // mastro
+    f.towers.forEach(tower => {
+        const flagX = tower.x + 10;
+        const flagY = tower.y;
+        
+        // Mastro
+        ctx.fillStyle = '#34495e';
+        ctx.fillRect(flagX, flagY - 30, 2, 30);
+        
+        // Bandeira
+        ctx.fillStyle = '#e74c3c';
         ctx.beginPath();
-        ctx.moveTo(fx, fy - 30);
-        ctx.lineTo(fx + 20 + wave, fy - 25);
-        ctx.lineTo(fx + 20 + wave, fy - 15);
-        ctx.lineTo(fx, fy - 20);
+        ctx.moveTo(flagX, flagY - 30);
+        ctx.lineTo(flagX + 20 + wave, flagY - 25);
+        ctx.lineTo(flagX + 20 + wave, flagY - 15);
+        ctx.lineTo(flagX, flagY - 20);
+        ctx.closePath();
         ctx.fill();
     });
     
     // Portão
     ctx.fillStyle = '#8b4513';
-    ctx.fillRect(f.gate.x, f.gate.y, f.gate.w, f.gate.h);
+    ctx.fillRect(475, 430, 50, 25);
+    
+    // Detalhes do portão
     ctx.strokeStyle = '#3e2723';
     ctx.lineWidth = 2;
     for (let i = 0; i < 3; i++) {
-        const x = f.gate.x + 10 + i * 15;
         ctx.beginPath();
-        ctx.moveTo(x, f.gate.y);
-        ctx.lineTo(x, f.gate.y + f.gate.h);
+        ctx.moveTo(485 + i * 15, 430);
+        ctx.lineTo(485 + i * 15, 455);
         ctx.stroke();
     }
     
@@ -164,132 +263,176 @@ function drawFortress() {
 }
 
 function drawGuards() {
-    const time = Date.now();
-    
-    phase1Data.guards.forEach((g, i) => {
-        // Patrulha otimizada
-        const patrolSpeed = 0.5;
-        const range = g.patrol[1] - g.patrol[0];
-        const progress = (time * patrolSpeed / 1000) % (range * 2);
-        g.x = progress < range ? g.patrol[0] + progress : g.patrol[1] - (progress - range);
+    phase1Data.guards.forEach(guard => {
+        // Patrulha
+        guard.x += 0.5 * guard.patrolDir;
+        if (guard.x >= guard.patrolEnd || guard.x <= guard.patrolStart) {
+            guard.patrolDir *= -1;
+        }
         
-        const pulse = Math.sin(time / 400 + i) * 2;
+        const pulse = Math.sin(Date.now() / 400) * 2;
         
         // Brilho
-        ctx.shadowColor = g.color;
+        ctx.shadowColor = guard.color;
         ctx.shadowBlur = 15 + pulse;
         
-        // Corpo (40x50)
-        ctx.fillStyle = g.color;
-        ctx.fillRect(g.x, g.y, 40, 50);
+        // Corpo
+        ctx.fillStyle = guard.color;
+        ctx.fillRect(guard.x, guard.y, guard.width, guard.height);
         
         // Capacete
         ctx.fillStyle = '#34495e';
         ctx.beginPath();
-        ctx.arc(g.x + 20, g.y + 10, 12, Math.PI, 0);
+        ctx.arc(guard.x + 20, guard.y + 10, 12, Math.PI, 0);
         ctx.fill();
         
         // Visor
         ctx.fillStyle = '#2c3e50';
-        ctx.fillRect(g.x + 10, g.y + 8, 20, 6);
+        ctx.fillRect(guard.x + 10, guard.y + 8, 20, 6);
         
-        // Escudo usando path cache
-        ctx.save();
-        ctx.translate(g.x, g.y + 20);
-        ctx.fillStyle = g.color;
-        ctx.fill(pathCache.shield);
-        ctx.strokeStyle = darken(g.color);
+        // Escudo
+        ctx.fillStyle = guard.color;
+        ctx.beginPath();
+        ctx.moveTo(guard.x + 20, guard.y + 20);
+        ctx.lineTo(guard.x + 8, guard.y + 28);
+        ctx.lineTo(guard.x + 8, guard.y + 38);
+        ctx.lineTo(guard.x + 20, guard.y + 46);
+        ctx.lineTo(guard.x + 32, guard.y + 38);
+        ctx.lineTo(guard.x + 32, guard.y + 28);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Borda do escudo
+        const darkerColor = darkenColor(guard.color);
+        ctx.strokeStyle = darkerColor;
         ctx.lineWidth = 2;
-        ctx.stroke(pathCache.shield);
-        ctx.restore();
+        ctx.stroke();
+        
+        ctx.shadowBlur = 0;
         
         // Emoji no escudo
-        ctx.shadowBlur = 0;
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(g.emoji, g.x + 20, g.y + 38);
+        ctx.fillText(guard.emoji, guard.x + 20, guard.y + 38);
         
-        // Indicador
-        if (!g.talked && near(player, g, 70)) {
-            ctx.fillStyle = 'rgba(255,215,0,0.9)';
+        // Indicador de interação
+        if (!guard.talked && isNear(player, guard, 70)) {
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
             ctx.font = 'bold 11px Rajdhani';
-            ctx.fillText('ESPAÇO', g.x + 20, g.y - 15);
+            ctx.fillText('ESPAÇO', guard.x + 20, guard.y - 15);
         }
     });
-    
-    ctx.shadowBlur = 0;
 }
 
-function drawOwl() {
-    const o = phase1Data.owl;
-    const pulse = Math.sin(Date.now() / 300) * 3;
-    
-    ctx.shadowColor = '#f39c12';
-    ctx.shadowBlur = 20;
-    
-    // Corpo
-    ctx.fillStyle = '#f39c12';
-    ctx.beginPath();
-    ctx.arc(o.x + 30, o.y + 30, 25 + pulse, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Coroa
-    ctx.fillStyle = '#ffd700';
-    ctx.beginPath();
-    ctx.moveTo(o.x + 15, o.y + 10);
-    ctx.lineTo(o.x + 30, o.y + 5);
-    ctx.lineTo(o.x + 45, o.y + 10);
-    ctx.lineTo(o.x + 30, o.y + 15);
-    ctx.fill();
-    
-    // Olhos
-    ctx.fillStyle = '#fff';
-    ctx.beginPath();
-    ctx.arc(o.x + 22, o.y + 25, 9, 0, Math.PI * 2);
-    ctx.arc(o.x + 38, o.y + 25, 9, 0, Math.PI * 2);
-    ctx.fill();
-    
-    ctx.fillStyle = '#000';
-    ctx.beginPath();
-    ctx.arc(o.x + 22, o.y + 25, 4, 0, Math.PI * 2);
-    ctx.arc(o.x + 38, o.y + 25, 4, 0, Math.PI * 2);
-    ctx.fill();
-    
-    // Bico
-    ctx.fillStyle = '#e67e22';
-    ctx.beginPath();
-    ctx.moveTo(o.x + 30, o.y + 30);
-    ctx.lineTo(o.x + 25, o.y + 36);
-    ctx.lineTo(o.x + 35, o.y + 36);
-    ctx.fill();
-    
-    ctx.shadowBlur = 0;
-    
-    if (!o.talked && near(player, o, 80)) {
-        ctx.fillStyle = 'rgba(255,215,0,0.9)';
-        ctx.font = 'bold 12px Rajdhani';
-        ctx.textAlign = 'center';
-        ctx.fillText('FALE COMIGO', o.x + 30, o.y + 75);
-    }
+function drawPhase1NPCs() {
+    phase1Data.npcs.forEach(npc => {
+        const pulse = Math.sin(Date.now() / 300) * 3;
+        
+        ctx.shadowColor = '#f39c12';
+        ctx.shadowBlur = 20;
+        
+        // Corpo da coruja
+        ctx.fillStyle = '#f39c12';
+        ctx.beginPath();
+        ctx.arc(npc.x + 30, npc.y + 30, 25 + pulse, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Coroa
+        ctx.fillStyle = '#ffd700';
+        ctx.beginPath();
+        ctx.moveTo(npc.x + 15, npc.y + 10);
+        ctx.lineTo(npc.x + 30, npc.y + 5);
+        ctx.lineTo(npc.x + 45, npc.y + 10);
+        ctx.lineTo(npc.x + 30, npc.y + 15);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Joia da coroa
+        ctx.fillStyle = '#e74c3c';
+        ctx.beginPath();
+        ctx.arc(npc.x + 30, npc.y + 8, 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Olhos
+        ctx.fillStyle = '#fff';
+        ctx.beginPath();
+        ctx.arc(npc.x + 22, npc.y + 25, 9, 0, Math.PI * 2);
+        ctx.arc(npc.x + 38, npc.y + 25, 9, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Pupilas
+        ctx.fillStyle = '#000';
+        ctx.beginPath();
+        ctx.arc(npc.x + 22, npc.y + 25, 4, 0, Math.PI * 2);
+        ctx.arc(npc.x + 38, npc.y + 25, 4, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Brilho nos olhos
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(npc.x + 23, npc.y + 24, 2, 0, Math.PI * 2);
+        ctx.arc(npc.x + 39, npc.y + 24, 2, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Bico
+        ctx.fillStyle = '#e67e22';
+        ctx.beginPath();
+        ctx.moveTo(npc.x + 30, npc.y + 30);
+        ctx.lineTo(npc.x + 25, npc.y + 36);
+        ctx.lineTo(npc.x + 35, npc.y + 36);
+        ctx.closePath();
+        ctx.fill();
+        
+        ctx.shadowBlur = 0;
+        
+        // Indicador
+        if (!npc.talked && isNear(player, npc, 80)) {
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.9)';
+            ctx.font = 'bold 12px Rajdhani';
+            ctx.textAlign = 'center';
+            ctx.fillText('FALE COMIGO', npc.x + 30, npc.y + 75);
+        }
+    });
 }
 
-function drawPuzzles() {
-    const time = Date.now();
-    
-    phase1Data.puzzles.forEach((p, i) => {
-        const pulse = Math.sin(time / 400 + i) * 6;
+function drawPhase1Puzzles() {
+    phase1Data.puzzles.forEach((puzzle, index) => {
+        const pulse = Math.sin(Date.now() / 400 + index) * 6;
+        const rotation = (Date.now() / 2000 + index) % (Math.PI * 2);
         
         ctx.save();
-        ctx.translate(p.x + 25, p.y + 25);
-        ctx.rotate((time / 2000 + i) * 0.3);
+        ctx.translate(puzzle.x + 25, puzzle.y + 25);
+        ctx.rotate(rotation * 0.3);
         
-        ctx.shadowColor = p.done ? '#00ff41' : '#9b59b6';
-        ctx.shadowBlur = 20 + pulse;
-        ctx.fillStyle = p.done ? '#00ff41' : '#9b59b6';
+        if (puzzle.completed) {
+            ctx.shadowColor = '#00ff41';
+            ctx.shadowBlur = 25 + pulse;
+            ctx.fillStyle = '#00ff41';
+        } else {
+            ctx.shadowColor = '#9b59b6';
+            ctx.shadowBlur = 20 + pulse;
+            ctx.fillStyle = '#9b59b6';
+        }
         
-        // Diamante usando path cache
-        ctx.fill(pathCache.diamond);
+        // Diamante
+        ctx.beginPath();
+        ctx.moveTo(0, -25);
+        ctx.lineTo(25, 0);
+        ctx.lineTo(0, 25);
+        ctx.lineTo(-25, 0);
+        ctx.closePath();
+        ctx.fill();
+        
+        // Brilho interno
+        ctx.fillStyle = puzzle.completed ? 'rgba(0, 255, 65, 0.4)' : 'rgba(195, 155, 211, 0.5)';
+        ctx.beginPath();
+        ctx.moveTo(0, -15);
+        ctx.lineTo(15, 0);
+        ctx.lineTo(0, 15);
+        ctx.lineTo(-15, 0);
+        ctx.closePath();
+        ctx.fill();
         
         ctx.restore();
         
@@ -297,22 +440,25 @@ function drawPuzzles() {
         ctx.shadowBlur = 0;
         ctx.font = 'bold 26px Arial';
         ctx.textAlign = 'center';
-        ctx.fillStyle = p.done ? '#fff' : '#2c3e50';
-        ctx.fillText(p.done ? '✓' : p.icon, p.x + 25, p.y + 30);
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = puzzle.completed ? '#fff' : '#2c3e50';
+        ctx.fillText(puzzle.completed ? '✓' : puzzle.icon, puzzle.x + 25, puzzle.y + 30);
         
-        if (!p.done && near(player, p, 100)) {
-            ctx.fillStyle = 'rgba(255,215,0,0.95)';
+        // Indicador
+        if (!puzzle.completed && isNear(player, puzzle, 100)) {
+            const bounce = Math.abs(Math.sin(Date.now() / 300)) * 3;
+            ctx.fillStyle = 'rgba(255, 215, 0, 0.95)';
             ctx.font = 'bold 14px Rajdhani';
-            ctx.fillText('⌨️ ESPAÇO', p.x + 25, p.y - 20);
+            ctx.fillText('⌨️ ESPAÇO', puzzle.x + 25, puzzle.y - 20 - bounce);
         }
     });
 }
 
-function drawBoss() {
-    const b = phase1Data.boss;
-    if (!b.active || b.defeated) return;
+function drawPhase1Boss() {
+    const boss = phase1Data.boss;
+    if (!boss.active || boss.defeated) return;
     
-    const shake = b.hp < 2 ? Math.sin(Date.now() / 50) * 4 : 0;
+    const shake = boss.hp < 2 ? Math.sin(Date.now() / 50) * 4 : 0;
     const breathe = Math.sin(Date.now() / 500) * 3;
     
     ctx.shadowColor = '#8b0000';
@@ -320,63 +466,75 @@ function drawBoss() {
     
     // Corpo
     ctx.fillStyle = '#8b0000';
-    ctx.fillRect(b.x + shake, b.y + breathe, b.w, b.h);
+    ctx.fillRect(boss.x + shake, boss.y + breathe, boss.width, boss.height);
     
     // Chifres
     ctx.fillStyle = '#4a0000';
     ctx.beginPath();
-    ctx.moveTo(b.x + 15 + shake, b.y + 10 + breathe);
-    ctx.lineTo(b.x + 10 + shake, b.y - 10 + breathe);
-    ctx.lineTo(b.x + 20 + shake, b.y + 10 + breathe);
+    ctx.moveTo(boss.x + 15 + shake, boss.y + 10 + breathe);
+    ctx.lineTo(boss.x + 10 + shake, boss.y - 10 + breathe);
+    ctx.lineTo(boss.x + 20 + shake, boss.y + 10 + breathe);
+    ctx.closePath();
     ctx.fill();
     
     ctx.beginPath();
-    ctx.moveTo(b.x + 65 + shake, b.y + 10 + breathe);
-    ctx.lineTo(b.x + 70 + shake, b.y - 10 + breathe);
-    ctx.lineTo(b.x + 60 + shake, b.y + 10 + breathe);
+    ctx.moveTo(boss.x + 65 + shake, boss.y + 10 + breathe);
+    ctx.lineTo(boss.x + 70 + shake, boss.y - 10 + breathe);
+    ctx.lineTo(boss.x + 60 + shake, boss.y + 10 + breathe);
+    ctx.closePath();
     ctx.fill();
     
     // Olhos
     ctx.fillStyle = '#ff0000';
-    ctx.fillRect(b.x + 20 + shake, b.y + 25 + breathe, 15, 15);
-    ctx.fillRect(b.x + 45 + shake, b.y + 25 + breathe, 15, 15);
+    ctx.fillRect(boss.x + 20 + shake, boss.y + 25 + breathe, 15, 15);
+    ctx.fillRect(boss.x + 45 + shake, boss.y + 25 + breathe, 15, 15);
     
     ctx.fillStyle = '#000';
-    ctx.fillRect(b.x + 25 + shake, b.y + 30 + breathe, 5, 5);
-    ctx.fillRect(b.x + 50 + shake, b.y + 30 + breathe, 5, 5);
+    ctx.fillRect(boss.x + 25 + shake, boss.y + 30 + breathe, 5, 5);
+    ctx.fillRect(boss.x + 50 + shake, boss.y + 30 + breathe, 5, 5);
     
     // Boca
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(b.x + 40 + shake, b.y + 55 + breathe, 20, 0, Math.PI);
+    ctx.arc(boss.x + 40 + shake, boss.y + 55 + breathe, 20, 0, Math.PI);
     ctx.stroke();
     
     ctx.shadowBlur = 0;
     
-    // HP Bar
-    const hpW = 100, hpH = 12;
-    const hpX = b.x - 10 + shake, hpY = b.y - 25;
+    // Barra de HP
+    const hpBarWidth = 100;
+    const hpBarHeight = 12;
+    const hpBarX = boss.x - 10 + shake;
+    const hpBarY = boss.y - 25;
     
-    ctx.fillStyle = 'rgba(0,0,0,0.9)';
-    ctx.fillRect(hpX, hpY, hpW, hpH);
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.9)';
+    ctx.fillRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
     
     ctx.fillStyle = '#ff0000';
-    ctx.fillRect(hpX, hpY, (hpW * b.hp) / b.maxHp, hpH);
+    const hpWidth = (hpBarWidth * boss.hp) / boss.maxHp;
+    ctx.fillRect(hpBarX, hpBarY, hpWidth, hpBarHeight);
     
     ctx.strokeStyle = '#8b0000';
     ctx.lineWidth = 2;
-    ctx.strokeRect(hpX, hpY, hpW, hpH);
+    ctx.strokeRect(hpBarX, hpBarY, hpBarWidth, hpBarHeight);
     
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 11px Orbitron';
     ctx.textAlign = 'center';
-    ctx.fillText(`${b.hp}/${b.maxHp} HP`, b.x + 40 + shake, hpY + 9);
+    ctx.fillText(`${boss.hp}/${boss.maxHp} HP`, boss.x + 40 + shake, hpBarY + 9);
     
-    if (near(player, b, 100)) {
-        ctx.fillStyle = 'rgba(255,215,0,0.95)';
+    // Nome
+    ctx.font = 'bold 12px Rajdhani';
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fillText('👹 ' + boss.name, boss.x + 40 + shake, hpBarY - 8);
+    
+    // Indicador de ataque
+    if (isNear(player, boss, 100)) {
+        const bounce = Math.abs(Math.sin(Date.now() / 250)) * 4;
+        ctx.fillStyle = 'rgba(255, 215, 0, 0.95)';
         ctx.font = 'bold 16px Rajdhani';
-        ctx.fillText('⚔️ ATAQUE!', b.x + 40 + shake, b.y - 45);
+        ctx.fillText('⚔️ ATAQUE!', boss.x + 40 + shake, boss.y - 45 - bounce);
     }
 }
 
@@ -387,105 +545,108 @@ function drawBoss() {
 function checkPhase1Interactions() {
     if (typeof gameState !== 'undefined' && gameState.paused) return;
     
-    // Coruja
-    const o = phase1Data.owl;
-    if (near(player, o, 70) && !o.talked) {
-        playSound('interact');
-        const msgs = [
-            '🦉 Bem-vindo à FORTALEZA DAS SENHAS, ' + (typeof gameState !== 'undefined' ? gameState.playerName : 'herói') + '!',
-            'Eu sou a Comandante Coruja! 👑',
-            'Esta fortaleza protege os segredos da internet! 🏰',
-            'Um VILÃO tenta invadir com senhas fracas! 😱',
-            'Fale com os GUARDAS (escudos coloridos)! 🛡️',
-            'Resolva os 3 DESAFIOS (cristais)! 💎',
-            'Depois enfrente o BOSS no portão! ⚔️'
-        ];
-        msgs.forEach((m, i) => setTimeout(() => showDialogue(m), i * 3500));
-        o.talked = true;
-    }
+    // Coruja Comandante
+    phase1Data.npcs.forEach(npc => {
+        if (isNear(player, npc, 70) && !npc.talked) {
+            if (typeof audioManager !== 'undefined') audioManager.playInteract();
+            npc.dialogue.forEach((text, index) => {
+                setTimeout(() => showDialogue(text), index * 3500);
+            });
+            npc.talked = true;
+        }
+    });
     
     // Guardas
-    phase1Data.guards.forEach(g => {
-        if (near(player, g, 60) && !g.talked) {
-            playSound('interact');
-            g.msg.forEach((m, i) => setTimeout(() => showDialogue(m), i * 2500));
-            g.talked = true;
+    phase1Data.guards.forEach(guard => {
+        if (isNear(player, guard, 60) && !guard.talked) {
+            if (typeof audioManager !== 'undefined') audioManager.playInteract();
+            guard.dialogue.forEach((text, index) => {
+                setTimeout(() => showDialogue(text), index * 2500);
+            });
+            guard.talked = true;
         }
     });
 
     // Puzzles
-    phase1Data.puzzles.forEach((p, i) => {
-        if (near(player, p, 80) && !p.done) {
-            playSound('interact');
-            showPuzzle(p, i, 1);
+    phase1Data.puzzles.forEach((puzzle, index) => {
+        if (isNear(player, puzzle, 80) && !puzzle.completed) {
+            if (typeof audioManager !== 'undefined') audioManager.playInteract();
+            showPuzzle(puzzle, index, 1);
         }
     });
 
     // Boss
-    const b = phase1Data.boss;
-    if (b.active && !b.defeated && near(player, b, 90)) {
-        b.hp--;
-        playSound('bossHit');
-        createExplosion(b.x + 40, b.y + 40, '#ff0000');
+    const boss = phase1Data.boss;
+    if (boss.active && !boss.defeated && isNear(player, boss, 90)) {
+        boss.hp--;
         
-        if (b.hp <= 0) {
-            b.defeated = true;
+        if (typeof audioManager !== 'undefined') audioManager.playBossHit();
+        createExplosion(boss.x + 40, boss.y + 40, '#ff0000');
+        
+        if (boss.hp <= 0) {
+            boss.defeated = true;
             phase1Data.bossDefeated = true;
-            playSound('bossDefeat');
+            
+            if (typeof audioManager !== 'undefined') audioManager.playBossDefeat();
             if (typeof updateScore === 'function') updateScore(500);
             
+            // Explosões de vitória
             for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
                     createExplosion(
-                        b.x + 40 + (Math.random() - 0.5) * 40,
-                        b.y + 40 + (Math.random() - 0.5) * 40,
-                        i % 2 ? '#00ff41' : '#ffd700'
+                        boss.x + 40 + (Math.random() - 0.5) * 40,
+                        boss.y + 40 + (Math.random() - 0.5) * 40,
+                        i % 2 === 0 ? '#00ff41' : '#ffd700'
                     );
                 }, i * 150);
             }
             
-            showDialogue('🎊 VITÓRIA! Lord Senha Fraca expulso! Você é o HERÓI! 🏆👑');
-            setTimeout(() => typeof completePhase === 'function' && completePhase(1), 3000);
+            showDialogue('🎊 VITÓRIA! Lord Senha Fraca foi expulso! Você é o HERÓI! 🏆👑');
+            setTimeout(() => {
+                if (typeof completePhase === 'function') completePhase(1);
+            }, 3000);
+            
         } else {
-            const msgs = ['💥 PRIMEIRO GOLPE!', '⚡ SEGUNDO ATAQUE!', '🔥 GOLPE FINAL!'];
-            showDialogue(msgs[b.maxHp - b.hp - 1]);
+            const messages = [
+                '💥 PRIMEIRO GOLPE! O vilão está tremendo!',
+                '⚡ SEGUNDO ATAQUE! Mais um e você vence!',
+                '🔥 GOLPE FINAL!'
+            ];
+            const msgIndex = boss.maxHp - boss.hp - 1;
+            showDialogue(messages[msgIndex]);
         }
     }
     
-    // Ativar boss
-    if (phase1Data.puzzles.every(p => p.done) && !b.active && !b.defeated) {
-        b.active = true;
-        showDialogue('🚨 Lord Senha Fraca ataca o portão! 🏰');
-        setTimeout(() => showDialogue('⚔️ Chegue perto 3x para derrotá-lo! 💪'), 2500);
+    // Ativar boss quando completar todos os puzzles
+    const allCompleted = phase1Data.puzzles.every(p => p.completed);
+    if (allCompleted && !boss.active && !boss.defeated) {
+        activatePhase1Boss();
     }
 }
 
-// ============================================
-// FUNÇÕES AUXILIARES OTIMIZADAS
-// ============================================
-
-function near(a, b, d = 50) {
-    if (!a || !b) return false;
-    const dx = (a.x || 0) - (b.x || 0);
-    const dy = (a.y || 0) - (b.y || 0);
-    return dx * dx + dy * dy < d * d;
+function activatePhase1Boss() {
+    phase1Data.boss.active = true;
+    showDialogue('🚨 ALERTA MÁXIMO! Lord Senha Fraca está atacando o portão da fortaleza! 🏰');
+    setTimeout(() => {
+        showDialogue('⚔️ Chegue perto dele 3 vezes para derrotá-lo e salvar a fortaleza! 💪');
+    }, 2500);
 }
 
-function darken(color) {
-    const hex = color.slice(1);
+// ============================================
+// FUNÇÕES AUXILIARES
+// ============================================
+
+function isNear(obj1, obj2, distance = 50) {
+    if (!obj1 || !obj2) return false;
+    const dx = (obj1.x || 0) - (obj2.x || 0);
+    const dy = (obj1.y || 0) - (obj2.y || 0);
+    return Math.sqrt(dx * dx + dy * dy) < distance;
+}
+
+function darkenColor(color) {
+    const hex = color.replace('#', '');
     const r = Math.floor(parseInt(hex.substr(0, 2), 16) * 0.7);
     const g = Math.floor(parseInt(hex.substr(2, 2), 16) * 0.7);
     const b = Math.floor(parseInt(hex.substr(4, 2), 16) * 0.7);
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
-
-function playSound(type) {
-    if (typeof audioManager !== 'undefined') {
-        if (type === 'interact') audioManager.playInteract();
-        else if (type === 'bossHit') audioManager.playBossHit();
-        else if (type === 'bossDefeat') audioManager.playBossDefeat();
-    }
-}
-
-// Inicializar paths ao carregar
-initPaths();
